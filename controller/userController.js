@@ -1580,6 +1580,16 @@ const editChatName = async (req, res) => {
   }
   const authenticatedUser = req.user;
   const chat = await Service.chatService.editChatName(chatId, authenticatedUser.user, chatName)
+  if(chat===null){
+    console.log('Not found Chat');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(400).json({
+      success:false,
+      statusCode: 400,
+      message: 'Not found Chat',
+      result: null,
+    });
+  }
     console.log('Edit chat name success');
     console.log('--------------------------------------------------------------------------------------------------------------------')
     return res.status(200).json({
