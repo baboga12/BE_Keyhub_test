@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", ({ fromUser, toUser, text }) => {
-    console.log({ fromUser, text });
+    console.log({ fromUser,toUser, text });
     const user = getUser(toUser);
     io.to(user?.socketId).emit("getMessage", {
       fromUser,
@@ -85,7 +85,7 @@ mongoose.connect(`${process.env.Mongo_DB}`, {
   user: 'Baboga12',
   pass: 'DWtxXsixg7KtOun0',
 }).then(() => {
-  console.log('Connected to Mongo');
+  console.log('Connected to Mongo');  
 });
 
 const port = process.env.PORT || 3001;

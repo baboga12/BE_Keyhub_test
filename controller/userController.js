@@ -1259,10 +1259,91 @@ const removeUserToGroup = async (req, res) =>{
     });
   }
 }
+const leaveGroup = async (req, res) =>{
+  try {
+    const authenticatedUser = req.user;
+    const {chatId} = req.body;
+    if(!chatId){
+      console.log('Chat Id is required');
+      console.log('--------------------------------------------------------------------------------------------------------------------')
+      return res.status(400).json({
+        success:false,
+        statusCode: 400,
+        message: 'Chat Id is required',
+        result: null,
+      });
+    }
+    const leaveGroup = await Service.chatService.leaveGroup(authenticatedUser.user,chatId);
+    if(leaveGroup === 1)
+    {
+      console.log('Not found Chat');
+      console.log('--------------------------------------------------------------------------------------------------------------------')
+      return res.status(400).json({
+        success:false,
+        statusCode: 400,
+        message: 'Not found Chat',
+        result: null,
+      });
+    }
+    console.log('Leave Group Successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success:true,
+      statusCode: 200,
+      message: 'Leave Group Successfully',
+      result: addUserToGroup,
+    });
+
+  } 
+  catch (error) {
+    console.log('Server Internal Error');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: 'Server Internal Error',
+      result: error.message,
+    });
+  }
+}
 const listChatUsers = async (req, res) =>{
   try {
     const authenticatedUser = req.user;
     const listChat = await Service.chatService.listChatUsers(authenticatedUser.user);
+    if(listChat===null)
+    {
+      console.log('List Chat By User');
+      console.log('--------------------------------------------------------------------------------------------------------------------')
+      return res.status(200).json({
+        success:true,
+        statusCode: 200,
+        message: 'List Chat By User',
+        result: null,
+      });
+    }
+    console.log('List Chat By User');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success:true,
+      statusCode: 200,
+      message: 'List Chat By User',
+      result: listChat,
+    });
+  } catch (error) {
+    console.log('Server Internal Error');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: 'Server Internal Error',
+      result: error.message,
+    });
+  }
+}
+const listChatUsersIsWait = async (req, res) =>{
+  try {
+    const authenticatedUser = req.user;
+    const listChat = await Service.chatService.listChatUsersIsWait(authenticatedUser.user);
     if(listChat===null)
     {
       console.log('List Chat By User');
@@ -1315,6 +1396,17 @@ const deleteChatByUser = async (req, res) => {
         success:false,
         statusCode: 400,
         message: 'Not found Chat',
+        result: null,
+      });
+    }
+    if(deleteChat===3)
+    {
+      console.log('Not found User');
+      console.log('--------------------------------------------------------------------------------------------------------------------')
+      return res.status(400).json({
+        success:false,
+        statusCode: 400,
+        message: 'Not found User',
         result: null,
       });
     }
@@ -1431,7 +1523,8 @@ const getAllMessageByChatId = async (req,res) =>{
 const deleteMessage = async (req, res) => {
  try {
   const messageId = req.params.messageId;
-  const deleteMessage =  await Service.chatService.deleteMessage(messageId);
+  const authenticatedUser = req.user;
+  const deleteMessage =  await Service.chatService.deleteMessage(messageId,authenticatedUser.user);
   if(deleteMessage===null) 
   {
     console.log('Not found Message');
@@ -1440,6 +1533,17 @@ const deleteMessage = async (req, res) => {
       success:false,
       statusCode: 400,
       message: 'Not found Message',
+      result: null,
+    });
+  }
+  if(deleteMessage===1)
+  {
+    console.log('You do not have permission to delete message');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(401).json({
+      success:false,
+      statusCode: 401,
+      message: 'You do not have permission to delete message',
       result: null,
     });
   }
@@ -1490,5 +1594,7 @@ module.exports = {
   singleChat,groupChat,
   findChatById,addUserToGroup,removeUserToGroup,
   listChatUsers,deleteChatByUser,
-  sendMessage,getAllMessageByChatId,deleteMessage
+  sendMessage,getAllMessageByChatId,deleteMessage,
+  listChatUsersIsWait,
+  leaveGroup
 }

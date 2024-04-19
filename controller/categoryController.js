@@ -671,7 +671,36 @@ const getCategoryByUser = async (req, res) => {
         });
     }
 }
-
+const getCategoryByUserIsAdmin = async (req, res) => {
+    try {
+    const authenticatedUser = req.user;
+    const index = req.params.index;
+    const category = await Service.categoryService.getCategoryFromUserIsAdmin(authenticatedUser.user._id,index);
+    if (category==null) {
+        console.log('Get Category Success')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Get Category Success',
+            result: null,
+        })
+    }
+    return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Get Category Success',
+        result: category,
+    })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            statusCode: 500,
+            message: 'Internal Server Error',
+            result: error.message,
+        });
+    }
+}
 const getCategoryByUserNotPaging = async (req, res) => {
     try {
     const authenticatedUser = req.user;
@@ -841,5 +870,6 @@ module.exports = {
     sizeAllCategoryByUser,
     getCategoryByUserNotPaging,
     acceptInvitation,
-    listInvitations
+    listInvitations,
+    getCategoryByUserIsAdmin
 }

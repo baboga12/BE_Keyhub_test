@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/',auth.authenticateToken,controller.categoryController.getCategoryById);
 router.get('/allCategories/:index',auth.authenticateToken,controller.categoryController.getAllCategory);
 router.get('/userCategories/:index',auth.authenticateToken,controller.categoryController.getCategoryByUser)
+router.get('/userCategoriesIsAdmin/:index',auth.authenticateToken,controller.categoryController.getCategoryByUserIsAdmin)
 router.get('/categoryByInvitationCode/:invitationCode',auth.authenticateToken,controller.categoryController.checkInvitationCode)
 router.get('/userRequest/:categoryId',auth.authenticateToken,controller.categoryController.listUserRequest)
 router.get('/sizeAll',controller.categoryController.sizeAllCategory)

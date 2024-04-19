@@ -566,6 +566,10 @@ if (listFriend.length===0){
 }
   return listFriend;
 }
+static search =async(values, type) =>
+{
+
 }
 
+}
 module.exports = UserService

@@ -40,6 +40,7 @@ router.post('/singleChat',auth.authenticateToken,userController.singleChat)
 router.post('/groupChat',auth.authenticateToken,userController.groupChat)
 router.post('/addUserToGroup',auth.authenticateToken,userController.addUserToGroup)
 router.post('/removeUserToGroup',auth.authenticateToken,userController.removeUserToGroup)
+router.post('/leaveGroup',auth.authenticateToken,userController.leaveGroup)
 router.delete('/:chatId/deleteChatByUser',auth.authenticateToken,userController.deleteChatByUser)
 router.post('/sendMessage',auth.authenticateToken,userController.sendMessage)
 router.get('/listMessage/:chatId',auth.authenticateToken,userController.getAllMessageByChatId)
@@ -48,6 +49,7 @@ router.delete('/deleteMessage/:messageId',auth.authenticateToken,userController.
 
 router.get('/singleChat/:chatId',auth.authenticateToken,userController.findChatById)
 router.get('/listChat',auth.authenticateToken,userController.listChatUsers)
+router.get('/listChatIsWait',auth.authenticateToken,userController.listChatUsersIsWait)
 
 
 

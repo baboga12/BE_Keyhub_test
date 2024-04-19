@@ -11,13 +11,17 @@ class CategoryService {
     static async getAllCategories(user_id,index) {
         const pageSize = 6;
         const skip = (index - 1) * pageSize; 
-        const categories = await categoryModel.find()
+        const categories = await categoryModel.find({status:'Publish'})
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(pageSize)
         .populate('tags')
         .populate('users')
         .exec();
+        for(const category of categories)
+        {
+            console.log(category._id)
+        }
         const user = await User.findById(user_id);
         if (!user) {
             console.log('------------------------------------------------------------------------------------------------')
@@ -294,8 +298,46 @@ class CategoryService {
             });
     
             const categoriesWithUserStatus = await Promise.all(categoriesWithUserStatusPromises);
-            const size = await this.sizeGetALlByUser(userId);
+            const result = [];
+            for(const category of categoriesWithUserStatus)
+            {
+                if(!category.isAdmin.equals(userId))
+                {
+                    result.push(category);
+                }
+                
+            }
+            const size = await this.sizeGetALlByUser(result);
+            return { categories: result, size: size };
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    static getCategoryFromUserIsAdmin = async (userId, index) => {
+        try {
+            const user = await User.findById(userId);
+            const pageSize = 6;
+            const skip = (index - 1) * pageSize; 
+            const categories = await Category.find({ isAdmin: userId })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(pageSize)
+                .populate('tags')
+                .populate('users')
+                .exec();
+            
+            if (categories.length === 0) {
+                return null;
+            }
+            
+            const categoriesWithUserStatusPromises = categories.map(async category => {
+                const statusUser = await this.getUserStatusInCategory1(category, user._id);  
+                return { ...category.toObject(), statusUser };
+            });
     
+            const categoriesWithUserStatus = await Promise.all(categoriesWithUserStatusPromises);
+            const size = await this.sizeGetALlByUser(categoriesWithUserStatusPromises);
             return { categories: categoriesWithUserStatus, size: size };
         } catch (error) {
             console.error(error);
@@ -320,15 +362,23 @@ class CategoryService {
             });
     
             const categoriesWithUserStatus = await Promise.all(categoriesWithUserStatusPromises);
-    
-            return  categoriesWithUserStatus;
+            const result = [];
+            for(const category of categoriesWithUserStatus)
+            {
+                if(!category.isAdmin.equals(userId))
+                {
+                    result.push(category);
+                }
+                
+            }
+            return  result;
         } catch (error) {
             console.error(error);
             throw error;
         }
     }
-    static sizeGetALlByUser = async (user_id) =>{
-        const countDocuments = await Category.countDocuments({ users: user_id });
+    static sizeGetALlByUser = async (result) =>{
+        const countDocuments = result.length;
         const totalPages = Math.ceil(countDocuments / 6); // Tính số lượng trang
         return totalPages;
     }

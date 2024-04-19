@@ -1,9 +1,22 @@
 const Group = require('../models/Chat/groupModel')
 const Message = require('../models/Chat/messageModel')
 const User = require('../models/usermodel')
+const Follow = require('../models/followModel')
 
 
 class ChatService {
+    static isUserFollowedByAuthenticatedUser = async (user_id, authenticatedUser_id) => {
+        try {
+            const follow = await Follow.findOne({ user: authenticatedUser_id }); 
+            if (!follow) {
+                return false;
+            }
+            const isFollowed = follow.following.some(userId => userId.equals(user_id));
+            return isFollowed;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
     static singleChat = async (authenticationUser, userId)=>{
     try {
         const user = await User.findById(userId);
@@ -21,7 +34,15 @@ class ChatService {
                 createBy: authenticationUser._id,
                 listUser: [authenticationUser._id, user.id],
                 isGroup: false,
+                userReceived: user._id,
+                isWait: false,
             })
+            const isFollower = await this.isUserFollowedByAuthenticatedUser(authenticationUser,userId);
+            const isFollowing = await this.isUserFollowedByAuthenticatedUser(userId,authenticationUser);
+            if(!isFollower || !isFollowing)
+            {
+                newGroup.isWait = true;
+            }
             await newGroup.save();
             return newGroup;
         } else {
@@ -118,9 +139,26 @@ class ChatService {
             }
         return 3;
     }
+    static leaveGroup = async (authenticationUser, chatId)=>{
+        const user = await User.findById(authenticationUser._id)
+        const chat = await Group.findById(chatId);
+        if(!chat) return 1;
+        const userIndex = chat.listUser.findIndex(userList => userList._id.equals(user._id));
+        chat.listUser.splice(userIndex, 1);
+        await chat.save();
+        return chat;
+    }
     static listChatUsers = async(authenticationUser) => {
         const chat = await Group.find({
-        listUser: { $all: [authenticationUser._id] } }).exec();
+        listUser: { $all: [authenticationUser._id] },
+        isWait: false }).exec();
+        if(!chat) return null;
+        return chat;
+    }
+    static listChatUsersIsWait = async(authenticationUser) => {
+        const chat = await Group.find({
+        listUser: { $all: [authenticationUser._id] },
+        isWait: true }).exec();
         if(!chat) return null;
         return chat;
     }
@@ -139,22 +177,23 @@ class ChatService {
             else return 5;
         }
         else{
-            const userIndex = chat.listUser.findIndex(userList => userList._id.equals(user._id));
-            const userFind = chat.listUser[userIndex];
-            chat.listUser.splice(userIndex, 1);
-            chat.listLastUser.push(userFind);
-            const messageList = await Message.find({chat: chat._id}) ;
-            for (const message of messageList) {
-                const userReceiveds = message.userReceived;
-                for (const userReceived of userReceiveds) {
-                    if(userReceived.user.equals(userFind._id))
-                    {
-                        userReceived.isDelete = true;
-                        await message.save();
-                    }
-                }
-            }
-            await chat.save();
+            // const userIndex = chat.listUser.findIndex(userList => userList._id.equals(user._id));
+            // const userFind = chat.listUser[userIndex];
+            // chat.listUser.splice(userIndex, 1);
+            // chat.listLastUser.push(userFind);
+            // const messageList = await Message.find({chat: chat._id}) ;
+            // for (const message of messageList) {
+            //     const userReceiveds = message.userReceived;
+            //     for (const userReceived of userReceiveds) {
+            //         if(userReceived.user.equals(userFind._id))
+            //         {
+            //             userReceived.isDelete = true;
+            //             await message.save();
+            //         }
+            //     }
+            // }
+            // await chat.save();
+            await chat.deleteOne();
             return 4;
         }
     }
@@ -176,29 +215,31 @@ class ChatService {
         return newMessage;
     }
     static getAllMessageInChat = async (authenticatedUser,chatId) =>{
-        const userFind = await User.findById(authenticatedUser._id);
+        //const userFind = await User.findById(authenticatedUser._id);
         const chat = await Group.findById(chatId);
         if(!chat) return null;
-        const result = [];
-        const messageList = await Message.find({chat: chat._id}).sort({ createdDay: 1 });;
-        for (const message of messageList) {
-            const userReceiveds = message.userReceived;
-            for (const userReceived of userReceiveds) {
-                if(userReceived.user.equals(userFind._id))
-                {
-                    if(!userReceived.isDelete)
-                    {
-                        result.push(message);
-                    }
-                }
-            }
-        }
-        return result;
+        // const result = [];
+        const messageList = await Message.find({chat: chat._id}).sort({ createdDay: 1 });
+        // for (const message of messageList) {
+        //     const userReceiveds = message.userReceived;
+        //     for (const userReceived of userReceiveds) {
+        //         if(userReceived.user.equals(userFind._id))
+        //         {
+        //             if(!userReceived.isDelete)
+        //             {
+        //                 result.push(message);
+        //             }
+        //         }
+        //     }
+        // }
+        return messageList;
     }
-    static deleteMessage = async (messageId)=>{
+    static deleteMessage = async (messageId,authenticatedUser)=>{
         const message = await Message.findById(messageId);
         if(!message) return null;
+        if(!message.user.equals(authenticatedUser._id))
         return 1;
+        await message.deleteOne();
     }
 }
 module.exports = ChatService;
