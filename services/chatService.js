@@ -244,8 +244,6 @@ class ChatService {
     static editChatName = async(chatId,authenticatedUser,name)=>{
         const chat = await Group.findById(chatId);
         if(!chat) return null;
-        if(!chat.admins.some(userList => userList._id.equals(authenticatedUser._id)))
-        return 1;
         chat.chatName = name;
         await chat.save();
         return chat;
