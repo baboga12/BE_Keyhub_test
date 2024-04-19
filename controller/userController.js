@@ -1566,7 +1566,29 @@ const deleteMessage = async (req, res) => {
   });
  }
 }
-
+const editChatName = async (req, res) => {
+  const {chatName,chatId} = req.body;
+  if (!chatName){
+    console.log('Chat Name is required');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(400).json({
+      success:false,
+      statusCode: 400,
+      message: 'Chat Name is required',
+      result: null,
+    });
+  }
+  const authenticatedUser = req.user;
+  const chat = await Service.chatService.editChatName(chatId, authenticatedUser.user, chatName)
+    console.log('Edit chat name success');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Edit chat name success',
+      result: chat,
+    });
+}
 module.exports = {
   getUserInfo,
   updatedUserInfo,
@@ -1596,5 +1618,6 @@ module.exports = {
   listChatUsers,deleteChatByUser,
   sendMessage,getAllMessageByChatId,deleteMessage,
   listChatUsersIsWait,
-  leaveGroup
+  leaveGroup,
+  editChatName
 }
