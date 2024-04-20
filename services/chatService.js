@@ -149,6 +149,7 @@ class ChatService {
         return chat;
     }
     static listChatUsers = async(authenticationUser) => {
+        const user = await User.findById(authenticationUser._id);
         const chats = await Group.find({
             $and: [
                 { listUser: { $all: [authenticationUser._id] } },
@@ -165,8 +166,15 @@ class ChatService {
         const result = [];
         chats.forEach(chat => {
             if (!chat.isGroup) {
-                const otherUser = chat.listUser.find(userId => userId !== authenticationUser._id);
-                chat.userReceived = otherUser;
+                const listUser= chat.listUser;
+                var userReceived;
+                for(let userCheck of listUser)
+                {
+                    if(!userCheck._id.equals(user._id)){
+                        userReceived = userCheck;
+                    }
+                }
+                chat.userReceived = userReceived;
                 result.push(chat);
             }
         });
