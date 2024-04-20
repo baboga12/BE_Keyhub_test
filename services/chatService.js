@@ -170,7 +170,9 @@ class ChatService {
     static listChatUsersIsWait = async(authenticationUser) => {
         const chat = await Group.find({
         listUser: { $all: [authenticationUser._id] },
-        isWait: true }).exec();
+        isWait: true,
+        userReceived: authenticationUser._id}).exec();
+        
         if(!chat) return null;
         return chat;
     }
