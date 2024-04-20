@@ -899,6 +899,37 @@ const listBlogIsApproved = async(req, res) => {
     });
    }
 }
+const approvedBlog= async (req, res) => {
+    const {blogId,status} = req.body;
+    const authenticatedUser = req.user;
+    if(!blogId) {
+        console.log('Blog Id is missing')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'Blog Id is missing',
+        result: null,});
+    }
+    const result = await Service.categoryService.approvedBlog(blogId, authenticatedUser.user,status);
+    if(result===null) {
+        console.log('Blog not found')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'Blog not found',
+        result: null,});
+    }
+    await Service.notificationService.evaluateBlogCategory(blogId, authenticatedUser.user,status);
+    console.log('Evalute blog successfully')
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: 'Evalute blog successfully',
+    result: null,});
+}
 module.exports = {
     addCategory,
     addTagsToCategory,
@@ -924,5 +955,6 @@ module.exports = {
     acceptInvitation,
     listInvitations,
     getCategoryByUserIsAdmin,
-    listBlogIsApproved
+    listBlogIsApproved,
+    approvedBlog
 }

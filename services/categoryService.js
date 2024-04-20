@@ -1,13 +1,13 @@
 const categoryModel = require('../models/Blog/categoryModel')
 const Category = require('../models/Blog/categoryModel')
 const User = require('../models/usermodel')
-const { v4: uuidv4 } = require('uuid');
 const cloudinary = require('cloudinary').v2;
 const UserRequest = require('../models/Blog/userRequestModel')
 const Invitation = require('../models/invitationModel')
 const Notify = require('../services/notificationService');
 const blogModel = require('../models/Blog/blogModel');
 const usermodel = require('../models/usermodel');
+
 
 class CategoryService {
     static async getAllCategories(user_id,index) {
@@ -445,11 +445,23 @@ class CategoryService {
     }
     static approvedBlog = async (blogId, authenticatedUser,status) => {
         const blog = await blogModel.findById(blogId);
-        const user = await usermodel.findById(authenticatedUser._id);
         if(!blog){
             return null;
         }
-        
+        if(status ===true)
+        {
+            blog.isApproved = false;
+            blog.createdAt =new Date();
+            await blog.save();
+            return blog;
+        }
+        if(status ===false)
+        {
+            blog.isApproved = true;
+            blog.status = 'Draft';
+            await blog.save();
+            return blog;
+        }
     }
 }
 

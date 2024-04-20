@@ -142,6 +142,28 @@ class NotificationService{
         const notification = await Notification.find({type: type, recipient: user_id});
         return notification;
     }
+    static evaluateBlogCategory = async(blogId, authenticatedUser,status) =>{
+        const blog = await Blog.findById(blogId);
+        const user = await User.findById(authenticatedUser._id);
+        if(status===true){
+            console.log(status);
+            const notification = new Notification({
+                sender: user._id,
+                blog: blogId,
+                type: 'AcceptBlog',
+                recipient: blog.user._id,
+            });
+            return notification.save();
+        }
+        console.log(status);
+        const notification = new Notification({
+            sender: user._id,
+            blog: blogId,
+            type: 'DeclineBlog',
+            recipient: blog.user._id,
+        });
+        return notification.save();
+    }
 }
 
 module.exports = NotificationService;

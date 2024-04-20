@@ -18,6 +18,8 @@ router.get('/categoryByUserNotPaging',auth.authenticateToken,controller.category
 router.get('/listInvitations',auth.authenticateToken,controller.categoryController.listInvitations)
 router.get('/:categoryId/listBlogIsApproved',auth.authenticateToken,controller.categoryController.listBlogIsApproved)
 
+
+router.post('/approveBlog',auth.authenticateToken,controller.categoryController.approvedBlog)
 router.post('/addCategory',auth.authenticateToken, controller.categoryController.addCategory);
 router.post('/requestJoin/:categoryId',auth.authenticateToken, controller.categoryController.sendRequestJoinCategory);
 router.post('/evaluateRequest',auth.authenticateToken, controller.categoryController.evaluateRequest);
