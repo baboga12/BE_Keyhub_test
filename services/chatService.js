@@ -37,8 +37,10 @@ class ChatService {
                 userReceived: user._id,
                 isWait: false,
             })
-            const isFollower = await this.isUserFollowedByAuthenticatedUser(authenticationUser,userId);
+            const isFollower = await this.isUserFollowedByAuthenticatedUser(authenticationUser._id,userId);
             const isFollowing = await this.isUserFollowedByAuthenticatedUser(userId,authenticationUser);
+            console.log(isFollower)
+            console.log(isFollowing)
             if(!isFollower || !isFollowing)
             {
                 newGroup.isWait = true;

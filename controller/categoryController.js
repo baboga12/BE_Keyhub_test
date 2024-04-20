@@ -3,7 +3,7 @@ const Service = require('../services/')
 const addCategory = async (req, res) => {
     try {
         const authenticationUser = req.user;
-        const { name, description, tagIds, status, userIds,banner } = req.body;
+        const { name, description, tagIds, status, userIds,banner,isApproved } = req.body;
 
         if (!name && !status) {
             console.log('Not found name or status');
@@ -34,7 +34,7 @@ const addCategory = async (req, res) => {
             });
         }
 
-        const category = await Service.categoryService.addCategory(name, description, tagIds, status, userIds, authenticationUser.user,banner);
+        const category = await Service.categoryService.addCategory(name, description, tagIds, status, userIds, authenticationUser.user,banner,isApproved);
         if (category == null) {
             console.log('Exits category');
             console.log('--------------------------------------------------------------------------------------------------------------------');
@@ -847,6 +847,58 @@ const evaluateRequest = async (req, res) =>{
         result: null,
     });
 }
+const listBlogIsApproved = async(req, res) => {
+    try {
+    const categoryId = req.params.categoryId;
+    const authenticatedUser = req.user;
+    if(!categoryId){
+        console.log('CategoryId is missing')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'CategoryId is missing',
+        result: null,});
+    }
+    const result = await Service.categoryService.listBlogIsApproved(categoryId, authenticatedUser.user);
+    if(result===null)
+    {
+        console.log('Category not found')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'Category not found',
+        result: null,});
+    }
+    if(result===3)
+    {
+        console.log('You do not have permission')
+        console.log('--------------------------------------------------------------------------------------------------------------------')
+        return res.status(401).json({
+        success: false,
+        statusCode: 401,
+        message: 'You do not have permission',
+        result: null,});
+    }
+    console.log('List blog is approved in category')
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: 'List blog is approved in category',
+    result: result,});
+    } catch (error) {
+    console.log('Internal Server Error');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: 'Internal Server Error',
+      result: error.message,
+    });
+   }
+}
 module.exports = {
     addCategory,
     addTagsToCategory,
@@ -871,5 +923,6 @@ module.exports = {
     getCategoryByUserNotPaging,
     acceptInvitation,
     listInvitations,
-    getCategoryByUserIsAdmin
+    getCategoryByUserIsAdmin,
+    listBlogIsApproved
 }

@@ -26,6 +26,10 @@ const categorySchema = new mongoose.Schema({
     publicId: { type: String, default: null },
     url: { type: String, default: null },
   },
+  isApproved: {
+    type: Boolean,
+    default: false
+  },
   banner: String,
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag', autopopulate: false }],
   invitationCode: { type: String, unique: true } 

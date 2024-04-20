@@ -5,7 +5,9 @@ const { v4: uuidv4 } = require('uuid');
 const cloudinary = require('cloudinary').v2;
 const UserRequest = require('../models/Blog/userRequestModel')
 const Invitation = require('../models/invitationModel')
-const Notify = require('../services/notificationService')
+const Notify = require('../services/notificationService');
+const blogModel = require('../models/Blog/blogModel');
+const usermodel = require('../models/usermodel');
 
 class CategoryService {
     static async getAllCategories(user_id,index) {
@@ -18,10 +20,6 @@ class CategoryService {
         .populate('tags')
         .populate('users')
         .exec();
-        for(const category of categories)
-        {
-            console.log(category._id)
-        }
         const user = await User.findById(user_id);
         if (!user) {
             console.log('------------------------------------------------------------------------------------------------')
@@ -74,7 +72,7 @@ class CategoryService {
         }
      };
     
-    static async addCategory(name, description,tagIds, status, userIds, authenticationUser,banner) {
+    static async addCategory(name, description,tagIds, status, userIds, authenticationUser,banner,isApproved) {
     const user = await User.findById(authenticationUser._id);
     
     const exitsCategory = await categoryModel.findOne({ name });
@@ -87,6 +85,7 @@ class CategoryService {
         status,
         banner,
         isAdmin: user._id,
+        isApproved:isApproved
     });
     if(tagIds!=null)
     {
@@ -426,6 +425,31 @@ class CategoryService {
         console.error(error);
         throw error;
         }
+    }
+    static listBlogIsApproved = async (categoryId, authenticatedUser) => {
+        try {
+            const category = await Category.findById(categoryId);
+            const user = await usermodel.findById(authenticatedUser._id)
+            if (!category) {
+                return null;
+            }
+            if (category.isAdmin._id.equals(user._id)  || user.roles === 'Admin' ) {
+                const blogs = await blogModel.find({ category: categoryId, isApproved: true });
+                return blogs;
+            }
+            return 3;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    static approvedBlog = async (blogId, authenticatedUser,status) => {
+        const blog = await blogModel.findById(blogId);
+        const user = await usermodel.findById(authenticatedUser._id);
+        if(!blog){
+            return null;
+        }
+        
     }
 }
 

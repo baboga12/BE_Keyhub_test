@@ -16,7 +16,44 @@ class BlogService{
         if(!category)
         {
             return 1;
-        }}
+        }
+        if(category.isAdmin.equals(user._id)){
+            const blog = new Blog({
+                title: blogDTO.title,
+                content: blogDTO.content,
+                category: blogDTO.categoryIds || null,
+                description: blogDTO.description,
+                avatar: blogDTO.avatar,
+                user: user,
+                isApproved: false
+            });
+            await blog.save();
+            if(blogDTO.tagIds!=null){
+            await blog.addTags(blogDTO.tagIds);
+            }
+            await temporaryImageModel.findOneAndDelete({user: authenticatedUser.user._id})
+            user.totalBlog = user.totalBlog + 1;
+            await user.save();
+            return blog;
+        }
+        const blog = new Blog({
+            title: blogDTO.title,
+            content: blogDTO.content,
+            category: blogDTO.categoryIds || null,
+            description: blogDTO.description,
+            avatar: blogDTO.avatar,
+            user: user,
+            isApproved: category.isApproved
+        });
+        await blog.save();
+        if(blogDTO.tagIds!=null){
+        await blog.addTags(blogDTO.tagIds);
+        }
+        await temporaryImageModel.findOneAndDelete({user: authenticatedUser.user._id})
+        user.totalBlog = user.totalBlog + 1;
+        await user.save();
+        return blog;
+    }
         const blog = new Blog({
             title: blogDTO.title,
             content: blogDTO.content,
@@ -315,7 +352,7 @@ class BlogService{
             const size = await this.sizeGetAllBlogByCategory(categoryId);
             console.log(size);
             try {
-            const query = await Blog.find({ category: categoryId, status:'Published' })
+            const query = await Blog.find({ category: categoryId, status:'Published', isApproved: false})
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(pageSize)
