@@ -46,6 +46,7 @@ router.delete('/:chatId/deleteChatByUser',auth.authenticateToken,userController.
 router.post('/sendMessage',auth.authenticateToken,userController.sendMessage)
 router.get('/listMessage/:chatId',auth.authenticateToken,userController.getAllMessageByChatId)
 router.delete('/deleteMessage/:messageId',auth.authenticateToken,userController.deleteMessage)
+router.post('/evaluateChat',auth.authenticateToken,userController.evaluateChat)
 
 
 router.get('/singleChat/:chatId',auth.authenticateToken,userController.findChatById)

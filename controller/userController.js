@@ -1599,6 +1599,50 @@ const editChatName = async (req, res) => {
       result: chat,
     });
 }
+const evaluateChat = async (req, res) => {
+  const {chatId, status} = req.body;
+  const authenticatedUser = req.user;
+  if (!chatId){
+    console.log('Chat Id is required');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(400).json({
+      success:false,
+      statusCode: 400,
+      message: 'Chat Id is required',
+      result: null,
+    });
+  }
+  const chat = await Service.chatService.evaluteChat(chatId,authenticatedUser,status);
+  if(chat===null){
+    console.log('Not found Chat');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(400).json({
+      success:false,
+      statusCode: 400,
+      message: 'Not found Chat',
+      result: null,
+    });
+  }
+  if(chat===1)
+  {
+    console.log('Delete Chat Successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success:true,
+      statusCode: 200,
+      message: 'Delete Chat Successfully',
+      result: null,
+    });
+  }
+  console.log('Accept Chat Successfully');
+  console.log('--------------------------------------------------------------------------------------------------------------------')
+  return res.status(200).json({
+    success:true,
+    statusCode: 200,
+    message: ' Accept Successfully',
+    result: chat,
+  });
+}
 module.exports = {
   getUserInfo,
   updatedUserInfo,
@@ -1629,5 +1673,5 @@ module.exports = {
   sendMessage,getAllMessageByChatId,deleteMessage,
   listChatUsersIsWait,
   leaveGroup,
-  editChatName
+  editChatName,evaluateChat
 }

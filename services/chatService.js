@@ -39,8 +39,6 @@ class ChatService {
             })
             const isFollower = await this.isUserFollowedByAuthenticatedUser(authenticationUser._id,userId);
             const isFollowing = await this.isUserFollowedByAuthenticatedUser(userId,authenticationUser);
-            console.log(isFollower)
-            console.log(isFollowing)
             if(!isFollower || !isFollowing)
             {
                 newGroup.isWait = true;
@@ -163,18 +161,32 @@ class ChatService {
                 ]}
             ]
         }).exec();
-    
         if(!chats) return null;
-        return chats;
+        const result = [];
+        chats.forEach(chat => {
+            if (!chat.isGroup) {
+                const otherUser = chat.listUser.find(userId => userId !== authenticationUser._id);
+                chat.userReceived = otherUser;
+                result.push(chat);
+            }
+        });
+        return result;
     }
     static listChatUsersIsWait = async(authenticationUser) => {
-        const chat = await Group.find({
+        const chats = await Group.find({
         listUser: { $all: [authenticationUser._id] },
         isWait: true,
         userReceived: authenticationUser._id}).exec();
-        
-        if(!chat) return null;
-        return chat;
+        if(!chats) return null;
+        const result = [];
+        chats.forEach(chat => {
+            if (!chat.isGroup) {
+                const otherUser = chat.listUser.find(userId => userId !== authenticationUser._id);
+                chat.userReceived = otherUser;
+                result.push(chat);
+            }
+        });
+        return result;
     }
     static deleteChatByUser = async(authenticationUser,chatId) => {
         const chat = await Group.findById(chatId);
@@ -261,6 +273,18 @@ class ChatService {
         chat.chatName = name;
         await chat.save();
         return chat;
+    }
+    static evaluteChat = async(chatId,authenticatedUser,status)=>{
+        const chat = await Group.findById(chatId);
+        if(!chat) return null;
+        if(status===true)
+        {
+            chat.isWait = false;
+            await chat.save();
+            return chat;
+        }
+        await chat.deleteOne();
+        return 1;
     }
 }
 module.exports = ChatService;
