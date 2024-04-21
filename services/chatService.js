@@ -175,6 +175,7 @@ class ChatService {
                     }
                 }
                 chat.userReceived = userReceived;
+                chat.isWait= false;
                 result.push(chat);
             }
         });
@@ -256,10 +257,12 @@ class ChatService {
         }));
         const newMessage = new Message({
             user: authenticationUser._id,
-            message: message,
+            message: {
+                content: message,
+                type: type
+            },
             chat: chat._id,
             userReceived:userReceivedArray,
-            type: type
         })
         await newMessage.save();
         return newMessage;
