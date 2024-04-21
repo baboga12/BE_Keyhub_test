@@ -178,6 +178,7 @@ class ChatService {
                 result.push(chat);
             }
         });
+        result.sort({createdAt: -1})
         return result;
     }
     static listChatUsersIsWait = async(authenticationUser) => {
@@ -202,6 +203,7 @@ class ChatService {
                 result.push(chat);
             }
         });
+        result.sort({createdAt: -1})
         return result;
     }
     static deleteChatByUser = async(authenticationUser,chatId) => {
@@ -296,7 +298,7 @@ class ChatService {
         if(status===true)
         {
             chat.isWait = false;
-            chat.createdAt = new Date();
+            chat.createdAt = new Date()
             await chat.save();
             return chat;
         }
