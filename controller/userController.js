@@ -1451,7 +1451,7 @@ const deleteChatByUser = async (req, res) => {
 }
 const sendMessage = async (req, res) => {
   try{
-    const {message, chatId} = req.body;
+    const {message, chatId,type} = req.body;
     const authenticatedUser = req.user;
     if(!message)
     {
@@ -1464,7 +1464,7 @@ const sendMessage = async (req, res) => {
         result: null,
       });
     }
-    const sendMessage = await Service.chatService.sendMessage(authenticatedUser.user,message,chatId);
+    const sendMessage = await Service.chatService.sendMessage(authenticatedUser.user,message,chatId,type);
     if(sendMessage===null)
     {
       console.log('Not found Chat');
@@ -1643,6 +1643,27 @@ const evaluateChat = async (req, res) => {
     result: chat,
   });
 }
+const uploadImageMessage = async (req,res) => { 
+  try {
+    const authenticatedUser = req.user;
+    const fileData  = req.file;    
+    console.log('Upload Image successfully')
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Upload Image successfully',
+      result: fileData.path,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: 'Internal server error',
+      result: error.message,
+    });
+  }
+}
 module.exports = {
   getUserInfo,
   updatedUserInfo,
@@ -1673,5 +1694,6 @@ module.exports = {
   sendMessage,getAllMessageByChatId,deleteMessage,
   listChatUsersIsWait,
   leaveGroup,
-  editChatName,evaluateChat
+  editChatName,evaluateChat,
+  uploadImageMessage
 }

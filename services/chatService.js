@@ -246,19 +246,20 @@ class ChatService {
             return 4;
         }
     }
-    static sendMessage = async (authenticationUser, message, chatId) => {
+    static sendMessage = async (authenticationUser, message, chatId,type) => {
         const chat = await Group.findById(chatId);
         if(!chat) return null;
         const userReceivedArray = chat.listUser.map(userId => ({
             user: userId,
             isDelete: false,
-            isSeen: false
+            isSeen: false,
         }));
         const newMessage = new Message({
             user: authenticationUser._id,
             message: message,
             chat: chat._id,
-            userReceived:userReceivedArray
+            userReceived:userReceivedArray,
+            type: type
         })
         await newMessage.save();
         return newMessage;

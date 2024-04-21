@@ -52,7 +52,7 @@ router.post('/evaluateChat',auth.authenticateToken,userController.evaluateChat)
 router.get('/singleChat/:chatId',auth.authenticateToken,userController.findChatById)
 router.get('/listChat',auth.authenticateToken,userController.listChatUsers)
 router.get('/listChatIsWait',auth.authenticateToken,userController.listChatUsersIsWait)
-
+router.post('/uploadImageMessage',auth.authenticateToken,uploadCloud.single('image'),userController.uploadImageMessage)
 
 
 

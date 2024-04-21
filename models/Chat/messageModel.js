@@ -7,6 +7,10 @@ const messageSchema = new Schema({
     user:{ type: Schema.Types.ObjectId, ref: 'User',autopopulate : true},
     message: String,
     chat:{ type: Schema.Types.ObjectId, ref: 'Group',autopopulate : true},
+    type: {
+        type: String,
+        enum: ['Text', 'Image'],
+    }
 }, { timestamps: true ,  strict: false }); 
 
 messageSchema.plugin(autopopulate)
