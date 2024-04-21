@@ -296,6 +296,7 @@ class ChatService {
         if(status===true)
         {
             chat.isWait = false;
+            chat.createdAt = new Date();
             await chat.save();
             return chat;
         }
