@@ -264,8 +264,10 @@ class ChatService {
             chat: chat._id,
             userReceived:userReceivedArray,
         })
-        chat.createdAt = new Date()
-        await chat.save();
+        await Group.updateOne(
+            { _id: chatId },
+            { $currentDate: { createdAt: true } }
+        );
         await newMessage.save();
         return newMessage;
     }
@@ -308,10 +310,11 @@ class ChatService {
         if(!chat) return null;
         if(status===true)
         {
-            chat.isWait = false;
-            chat.createdAt = new Date()
-            await chat.save();
-            return chat;
+            await Group.updateOne(
+                { _id: chatId },
+                { $set: { isWait: false }, $currentDate: { createdAt: true } }
+            );
+            return await Group.findById(chatId);
         }
         await chat.deleteOne();
         return 1;
