@@ -180,7 +180,7 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.updatedAt) - new Date(a.updatedAt);
+            return new Date(b.createdAt) - new Date(a.createdAt);
         });
         
         return result;
@@ -208,7 +208,7 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.updatedAt) - new Date(a.updatedAt);
+            return new Date(b.createdAt) - new Date(a.createdAt);
         });        
         return result;
     }
@@ -264,6 +264,8 @@ class ChatService {
             chat: chat._id,
             userReceived:userReceivedArray,
         })
+        chat.createdAt = new Date()
+        await chat.save();
         await newMessage.save();
         return newMessage;
     }
@@ -307,7 +309,7 @@ class ChatService {
         if(status===true)
         {
             chat.isWait = false;
-            chat.updatedAt = new Date()
+            chat.createdAt = new Date()
             await chat.save();
             return chat;
         }
