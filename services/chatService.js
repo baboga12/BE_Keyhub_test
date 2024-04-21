@@ -178,7 +178,10 @@ class ChatService {
                 result.push(chat);
             }
         });
-        result.sort({createdAt: -1})
+        result.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        
         return result;
     }
     static listChatUsersIsWait = async(authenticationUser) => {
@@ -203,7 +206,9 @@ class ChatService {
                 result.push(chat);
             }
         });
-        result.sort({createdAt: -1})
+        result.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });        
         return result;
     }
     static deleteChatByUser = async(authenticationUser,chatId) => {
