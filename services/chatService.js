@@ -180,7 +180,7 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt);
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
         });
         
         return result;
@@ -208,7 +208,7 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt);
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
         });        
         return result;
     }
@@ -307,7 +307,7 @@ class ChatService {
         if(status===true)
         {
             chat.isWait = false;
-            chat.createdAt = new Date()
+            chat.updatedAt = new Date()
             await chat.save();
             return chat;
         }
