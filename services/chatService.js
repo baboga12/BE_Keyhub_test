@@ -148,52 +148,73 @@ class ChatService {
         await chat.save();
         return chat;
     }
-    static listChatUsers = async(authenticationUser) => {
+    static listChatUsers = async (authenticationUser) => {
         const user = await User.findById(authenticationUser._id);
         const chats = await Group.find({
             $and: [
                 { listUser: { $all: [authenticationUser._id] } },
-                { $or: [
-                    { isWait: false },
-                    { 
-                        isWait: true,
-                        userReceived: { $ne: authenticationUser._id }
-                    }
-                ]}
+                {
+                    $or: [
+                        { isWait: false },
+                        {
+                            isWait: true,
+                            userReceived: { $ne: authenticationUser._id }
+                        }
+                    ]
+                }
             ]
         }).exec();
+    
         const chatGroup = await Group.find({
             $and: [
                 { listUser: { $all: [authenticationUser._id] } },
                 { isWait: false },
-                {isGroup: true}
+                { isGroup: true }
             ]
         }).exec();
-        if(!chats) return null;
+    
+        if (!chats) return null;
+    
         const result = [];
+    
+        const removeDuplicates = (arr) => {
+            const uniqueArray = [];
+            arr.forEach(item => {
+                if (!uniqueArray.some(uniqueItem => uniqueItem._id.equals(item._id))) {
+                    uniqueArray.push(item);
+                }
+            });
+            return uniqueArray;
+        };
+    
         chats.forEach(chat => {
             result.push(chat);
         });
+    
         chats.forEach(chat => {
             if (!chat.isGroup) {
-                const listUser= chat.listUser;
-                var userReceived;
-                for(let userCheck of listUser)
-                {
-                    if(!userCheck._id.equals(user._id)){
+                const listUser = chat.listUser;
+                let userReceived;
+                for (let userCheck of listUser) {
+                    if (!userCheck._id.equals(user._id)) {
                         userReceived = userCheck;
                     }
                 }
                 chat.userReceived = userReceived;
-                chat.isWait= false;
+                chat.isWait = false;
                 result.push(chat);
             }
         });
-        result.sort((a, b) => {
+    
+        const uniqueResult = removeDuplicates(result);
+    
+        uniqueResult.sort((a, b) => {
             return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         });
-        return result;
+    
+        return uniqueResult;
     }
+    
     static listChatUsersIsWait = async(authenticationUser) => {
         const user = await User.findById(authenticationUser._id);
         const chats = await Group.find({
