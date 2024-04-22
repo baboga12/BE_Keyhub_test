@@ -180,9 +180,8 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.updatedAt) - new Date(a.updatedAt);
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         });
-        
         return result;
     }
     static listChatUsersIsWait = async(authenticationUser) => {
@@ -208,8 +207,8 @@ class ChatService {
             }
         });
         result.sort((a, b) => {
-            return new Date(b.updatedAt) - new Date(a.updatedAt);
-        });        
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        });      
         return result;
     }
     static deleteChatByUser = async(authenticationUser,chatId) => {
@@ -265,6 +264,7 @@ class ChatService {
             userReceived:userReceivedArray,
         })
         chat.chatName = chat.chatName;
+        chat.markModified('chatName'); 
         await chat.save();
         await newMessage.save();
         return newMessage;
