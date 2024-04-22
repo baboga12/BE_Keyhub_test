@@ -392,6 +392,7 @@ class BlogService{
                 return null;
             }
         }
+        //Blog search
         static listBlogSearch = async (authenticatedUser, key)=>{
             try {
                 const regex = new RegExp(key, 'i');
