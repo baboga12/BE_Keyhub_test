@@ -392,6 +392,29 @@ class BlogService{
                 return null;
             }
         }
+        static listBlogSearch = async (authenticatedUser, key)=>{
+            try {
+                const regex = new RegExp(key, 'i');
+                const query = await Blog.find({
+                    $or: [
+                        { title: regex },
+                        { description: regex },
+                        { content: regex }
+                    ]
+                }).populate('tags')
+                .populate('user')
+                .populate('category').sort({ updatedAt: -1 });;
+                const posts = await this.findAndUpdateLikeAndSave(query,authenticatedUser._id)
+                const posts2 = await this.findAndUpdatePermissions(posts,authenticatedUser._id)
+                if (posts2.length === 0) {
+                    return null;
+                }
+                return posts2;            
+            } catch (error) {
+                console.error("Error fetching most active posts:", error);
+                return null;
+            }
+        }
         static listBlogByUserId = async (userId,authenticatedUser)=>{
             try {
                 const query = await Blog.find({ user: userId , status: 'Published'})

@@ -1664,6 +1664,52 @@ const uploadImageMessage = async (req,res) => {
     });
   }
 }
+const search = async (req, res) => {
+  const {key,type} =req.body;
+  if(!key)
+  {
+    console.log('Key is required');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: 'Key is required',
+      result: null,
+    });
+  }
+  const authenticatedUser = req.user;
+  const result = await Service.userService.search(key,type, authenticatedUser.user);
+  if(type==='Blog'){
+    console.log('List blog results');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'List blog results',
+      result: result,
+    });
+  }
+  if(type==='Category'){
+    console.log('List category results');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'List category results',
+      result: result,
+    });
+  }
+  if(type==='User'){
+    console.log('List User results');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'List user results',
+      result: result,
+    });
+  }
+}
 module.exports = {
   getUserInfo,
   updatedUserInfo,
@@ -1695,5 +1741,6 @@ module.exports = {
   listChatUsersIsWait,
   leaveGroup,
   editChatName,evaluateChat,
-  uploadImageMessage
+  uploadImageMessage,
+  search
 }

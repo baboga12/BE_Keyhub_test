@@ -70,7 +70,7 @@ class CategoryService {
                 return 'UnJoin';
             }
         }
-     };
+    };
     
     static async addCategory(name, description,tagIds, status, userIds, authenticationUser,banner,isApproved) {
     const user = await User.findById(authenticationUser._id);
@@ -341,6 +341,28 @@ class CategoryService {
         } catch (error) {
             console.error(error);
             throw error;
+        }
+    }
+    static listCategorySearch = async (authenticatedUser, key)=>{
+        try {
+            const regex = new RegExp(key, 'i');
+            const user = await User.findById(authenticatedUser._id);
+            const query = await Category.find({
+                $or: [
+                    { name: regex },
+                    { description: regex }
+                ]
+            }).sort({ updatedAt: -1 });;
+            const categoriesWithUserStatusPromises = query.map(async category => {
+                const statusUser = await this.getUserStatusInCategory1(category, user._id);  
+                return { ...category.toObject(), statusUser };
+            });
+    
+            const categoriesWithUserStatus = await Promise.all(categoriesWithUserStatusPromises);
+            return categoriesWithUserStatus;            
+        } catch (error) {
+            console.error("Error fetching most active posts:", error);
+            return null;
         }
     }
     static getCategoryFromUserNotPaging = async (userId) => {
