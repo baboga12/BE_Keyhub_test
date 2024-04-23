@@ -103,7 +103,7 @@ class CategoryService {
         .populate('tags');
     return populatedCategory;
     }
-    static async editCategory(newName, newDescription, newStatus, authenticationUser,categoryId) {
+    static async editCategory(newName, newDescription, newStatus, authenticationUser,categoryId,isApproved) {
         
         let categoryToEdit = await categoryModel.findById(categoryId).populate('users').populate('tags');
 
@@ -115,6 +115,7 @@ class CategoryService {
             categoryToEdit.name = newName || categoryToEdit.name;
             categoryToEdit.description = newDescription || categoryToEdit.description;
             categoryToEdit.status = newStatus || categoryToEdit.status;
+            categoryToEdit.isApproved = isApproved || categoryToEdit.isApproved;
             await categoryToEdit.save();
             return categoryToEdit;
         }

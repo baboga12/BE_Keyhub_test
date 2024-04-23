@@ -68,8 +68,8 @@ const addCategory = async (req, res) => {
 const editCategory = async (req,res) =>{
     try {
         const authenticationUser = req.user;
-        const {name, description, status, categoryId } = req.body;
-        let category = await Service.categoryService.editCategory(name, description, status,authenticationUser.user,categoryId);
+        const {name, description, status, categoryId,isApproved } = req.body;
+        let category = await Service.categoryService.editCategory(name, description, status,authenticationUser.user,categoryId,isApproved);
         if (category==null) {
             console.log('Exits category')
             console.log('--------------------------------------------------------------------------------------------------------------------')

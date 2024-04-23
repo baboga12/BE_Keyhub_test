@@ -5,7 +5,7 @@ class AdminService{
     const setting = new Setting({
         value: value
     });
-    setting.save();
+    return setting.save();
  }
 }
 module.exports = AdminService;
