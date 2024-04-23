@@ -181,7 +181,7 @@ class BlogService{
         if (!user) {
             return null;
         }
-        const blog = await Blog.find({user: user._id});
+        const blog = await Blog.find({user: user._id, status: 'Published', isApproved:false});
         return blog;
     }
     static getBlogDraftByUser = async (authenticatedUser) =>{
@@ -267,7 +267,7 @@ class BlogService{
             }
         }
         static sizeAllBlogPublish= async ()=>{
-            const countDocuments = await Blog.countDocuments({ status: 'Published' });
+            const countDocuments = await Blog.countDocuments({ status: 'Published',isApproved:false });
             const totalPages = Math.ceil(countDocuments / 6);
             return totalPages;
         }
@@ -276,7 +276,7 @@ class BlogService{
             const skip = (index - 1) * pageSize;
             try {
             const size = await this.sizeAllBlogPublish();
-              const query = await Blog.find({ status: 'Published' }) // Tạo query
+              const query = await Blog.find({ status: 'Published',isApproved:false }) // Tạo query
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(pageSize)
@@ -300,7 +300,7 @@ class BlogService{
             const skip = (index - 1) * pageSize; // Số bài viết sẽ bỏ qua
             try {
             const size = await this.sizeAllBlogPublish();
-            const query = await Blog.find({ status: 'Published' })
+            const query = await Blog.find({ status: 'Published',isApproved: false })
                 .sort({ likes: -1, views: -1, updatedAt: -1 }) // Sắp xếp theo lượt like, views và ngày update
                 .skip(skip)   
                 .limit(pageSize) 
@@ -323,7 +323,7 @@ class BlogService{
             const skip = (index - 1) * pageSize;
             try {
             const size = await this.sizeAllBlogPublish();
-            const query = await Blog.find({ status: 'Published' })
+            const query = await Blog.find({ status: 'Published' ,isApproved: false})
                 .sort({ sumComment: -1, views: -1, updatedAt: -1 }) 
                 .skip(skip)   
                 .limit(pageSize) 
@@ -395,16 +395,21 @@ class BlogService{
         //Blog search
         static listBlogSearch = async (authenticatedUser, key)=>{
             try {
-                const regex = new RegExp(key, 'i');
                 const query = await Blog.find({
-                    $or: [
-                        { title: regex },
-                        { description: regex },
-                        { content: regex }
+                    $and: [
+                        {
+                            $or: [
+                                { title: regex },
+                                { description: regex },
+                                { content: regex }
+                            ]
+                        },
+                        { isApproved: true } // Điều kiện mới: isApproved phải là true
                     ]
                 }).populate('tags')
                 .populate('user')
-                .populate('category').sort({ updatedAt: -1 });;
+                .populate('category')
+                .sort({ updatedAt: -1 });
                 const posts = await this.findAndUpdateLikeAndSave(query,authenticatedUser._id)
                 const posts2 = await this.findAndUpdatePermissions(posts,authenticatedUser._id)
                 if (posts2.length === 0) {
@@ -418,7 +423,7 @@ class BlogService{
         }
         static listBlogByUserId = async (userId,authenticatedUser)=>{
             try {
-                const query = await Blog.find({ user: userId , status: 'Published'})
+                const query = await Blog.find({ user: userId , status: 'Published',isApproved: false})
                     .sort({ createdAt: -1 })
                     .populate('tags')
                     .populate('user')
@@ -444,7 +449,7 @@ class BlogService{
             const uniquePostIds = new Set();
             const categories = await Category.find({users: authenticatedUser._id})
             for (const category of categories) {
-                const query = await Blog.find({ category: category._id, status: 'Published'})
+                const query = await Blog.find({ category: category._id, status: 'Published',isApproved: false})
                     .sort({ createdAt: -1 })
                     .populate('tags')
                     .populate('user')
@@ -465,7 +470,7 @@ class BlogService{
         if(follow){
             const users = follow.following;
             for (const user of users) {
-                const query = await Blog.find({ user: user._id, status: 'Published'})
+                const query = await Blog.find({ user: user._id, status: 'Published',isApproved:false})
                                         .sort({ createdAt: -1 })
                                         .populate('tags')
                                         .populate('user')
