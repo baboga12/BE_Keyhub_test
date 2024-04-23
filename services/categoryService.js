@@ -110,12 +110,13 @@ class CategoryService {
         if (!categoryToEdit) {
             return null;
         }
-    
+        console.log(categoryToEdit.isApproved)
+        console.log(isApproved)
         if (categoryToEdit.isAdmin._id == authenticationUser._id  || authenticationUser.roles == 'Admin' ) {
             categoryToEdit.name = newName || categoryToEdit.name;
             categoryToEdit.description = newDescription || categoryToEdit.description;
             categoryToEdit.status = newStatus || categoryToEdit.status;
-            categoryToEdit.isApproved = isApproved || categoryToEdit.isApproved;
+            categoryToEdit.isApproved = isApproved;
             await categoryToEdit.save();
             return categoryToEdit;
         }

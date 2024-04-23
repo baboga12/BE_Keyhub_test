@@ -70,7 +70,7 @@ const editCategory = async (req,res) =>{
         const authenticationUser = req.user;
         const {name, description, status, categoryId,isApproved } = req.body;
         let category = await Service.categoryService.editCategory(name, description, status,authenticationUser.user,categoryId,isApproved);
-        if (category==null) {
+        if (category===null) {
             console.log('Exits category')
             console.log('--------------------------------------------------------------------------------------------------------------------')
             return res.status(400).json({
