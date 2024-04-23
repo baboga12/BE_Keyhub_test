@@ -407,7 +407,7 @@ class BlogService{
                                 { content: regex }
                             ]
                         },
-                        { isApproved: true } // Điều kiện mới: isApproved phải là true
+                        { isApproved: false } // Điều kiện mới: isApproved phải là true
                     ]
                 }).populate('tags')
                 .populate('user')
