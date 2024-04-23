@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes');
+const Service = require('./services/chatService');
 const http = require('http');
 const { Server } = require("socket.io");
 const schedule = require('node-schedule');
@@ -44,7 +45,6 @@ io.on("connection", (socket) => {
       io.emit("getUsers", users);
     }
   });
-
   socket.on("sendMessage", ({ fromUser, toUser, text }) => {
     console.log({ fromUser,toUser, text });
     const user = getUser(toUser);
@@ -55,7 +55,38 @@ io.on("connection", (socket) => {
     });
     console.log("Send message to socket Success");
   });
-
+//   socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
+//     console.log({ fromUser, toUser, text, chatId });
+//     const group = await Service.findChatById(toUser);
+//     if (group.isGroup) {
+//         if (!group) {   
+//             console.log("Group not found");
+//             return;
+//         }
+//         group.listUser.forEach(async (userId) => {
+//             const user = getUser(userId);
+//             if (user) {              
+//                 io.to(user.socketId).emit("getMessage", {
+//                     fromUser,
+//                     toUser: user._id,
+//                     text,
+//                 });
+//             }
+//         });
+//     } else {
+//         const user = getUser(toUser);
+//         if (user) {
+//             io.to(user.socketId).emit("getMessage", {
+//                 fromUser,
+//                 toUser,
+//                 text,
+//             });
+//         } else {
+//             console.log("User not found");
+//         }
+//     }
+//     console.log("Send message to socket Success");
+// });
   socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {

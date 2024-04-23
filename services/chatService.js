@@ -214,7 +214,11 @@ class ChatService {
     
         return uniqueResult;
     }
-    
+    static findChatById= async (chatId) => {
+        const chat = await Group.findById(chatId);
+        if(!chat) return null;
+        return chat;
+    }
     static listChatUsersIsWait = async(authenticationUser) => {
         const user = await User.findById(authenticationUser._id);
         const chats = await Group.find({
