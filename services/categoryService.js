@@ -484,9 +484,7 @@ class CategoryService {
         }
         if(status ===false)
         {
-            blog.isApproved = true;
-            blog.status = 'Draft';
-            await blog.save();
+            await blog.deleteOne();
             return blog;
         }
     }

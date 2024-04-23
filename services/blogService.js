@@ -397,6 +397,7 @@ class BlogService{
         //Blog search
         static listBlogSearch = async (authenticatedUser, key)=>{
             try {
+                const regex = new RegExp(key, 'i');
                 const query = await Blog.find({
                     $and: [
                         {
