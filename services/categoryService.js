@@ -469,6 +469,7 @@ class CategoryService {
     }
     static approvedBlog = async (blogId, authenticatedUser,status) => {
         const blog = await blogModel.findById(blogId);
+        const user = await usermodel.findById(blog.user._id);
         if(!blog){
             return null;
         }
@@ -477,6 +478,8 @@ class CategoryService {
             blog.isApproved = false;
             blog.createdAt =new Date();
             await blog.save();
+            user.totalBlog = user.totalBlog + 1;
+            await user.save();
             return blog;
         }
         if(status ===false)
