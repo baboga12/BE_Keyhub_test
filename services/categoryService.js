@@ -477,10 +477,10 @@ class CategoryService {
     }
     static approvedBlog = async (blogId, authenticatedUser,status) => {
         const blog = await blogModel.findById(blogId);
-        const user = await usermodel.findById(blog.user._id);
         if(!blog){
             return null;
         }
+        const user = await usermodel.findById(blog.user._id);
         if(status ===true)
         {
             blog.isApproved = false;

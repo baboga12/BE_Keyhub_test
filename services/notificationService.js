@@ -155,7 +155,6 @@ class NotificationService{
             });
             return notification.save();
         }
-        console.log(status);
         const notification = new Notification({
             sender: user._id,
             blog: blogId,
@@ -165,7 +164,6 @@ class NotificationService{
         return notification.save();
     }
     static notifyChat = async (message, authenticatedUser) =>{
-        console.log(message)
         const authenticationUser = await User.findById(authenticatedUser._id);
 
         await Notification.deleteMany({

@@ -922,6 +922,7 @@ const approvedBlog= async (req, res) => {
         message: 'Blog Id is missing',
         result: null,});
     }
+    await Service.notificationService.evaluateBlogCategory(blogId, authenticatedUser.user,status);
     const result = await Service.categoryService.approvedBlog(blogId, authenticatedUser.user,status);
     if(result===null) {
         console.log('Blog not found')
@@ -932,7 +933,6 @@ const approvedBlog= async (req, res) => {
         message: 'Blog not found',
         result: null,});
     }
-    await Service.notificationService.evaluateBlogCategory(blogId, authenticatedUser.user,status);
     console.log('Evalute blog successfully')
     console.log('--------------------------------------------------------------------------------------------------------------------')
     return res.status(200).json({
