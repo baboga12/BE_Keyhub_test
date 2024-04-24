@@ -100,10 +100,32 @@ class ReportService {
         return reportType;
     }
     static addTypeReport = async (value)=>{
+        const reportCheck = await ReportType.findOne({value: value});
+        if(reportCheck){
+            return 1;
+        }
         const reportType = new ReportType({
             value: value,
         })
         return reportType.save();
+    };
+    static editTypeReport = async (reportTypeId, value)=>{
+        const report = await ReportType.findById(reportTypeId);
+        if(!report) return 1;
+        const listReportType = await ReportType.find();
+        for(const reportType of listReportType){
+            if(reportType._id.equals(report._id))
+            {
+                continue;
+            }
+            else {
+                if(reportType.value.toLowerCase() === value.toLowerCase()){
+                    return 2;
+                }
+            }
+        }
+        report.value = value;
+        return report.save();
     };
 }
 module.exports = ReportService;

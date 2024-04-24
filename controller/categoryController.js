@@ -71,6 +71,17 @@ const editCategory = async (req,res) =>{
         const {name, description, status, categoryId,isApproved } = req.body;
         let category = await Service.categoryService.editCategory(name, description, status,authenticationUser.user,categoryId,isApproved);
         if (category===null) {
+            console.log('Not found category')
+            console.log('--------------------------------------------------------------------------------------------------------------------')
+            return res.status(400).json({
+                success: false,
+                statusCode: 400,
+                message: 'Not found Category',
+                result: null,
+            })
+        }
+        if(category===3)
+        {
             console.log('Exits category')
             console.log('--------------------------------------------------------------------------------------------------------------------')
             return res.status(400).json({
@@ -104,7 +115,7 @@ const editCategory = async (req,res) =>{
         return res.status(500).json({
             success: false,
             statusCode: 500,
-            message: 'Add Category Failed',
+            message: 'Internal Server Error',
             error: error
         })
     }

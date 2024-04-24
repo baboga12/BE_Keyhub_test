@@ -8,6 +8,7 @@ const Category = require('../models/Blog/categoryModel');
 const followModel = require('../models/followModel');
 const Share = require('../models/Blog/shareModel');
 const { post } = require('../routes/userRoutes');
+const usermodel = require('../models/usermodel');
 class BlogService{
     static createBlog =  async (blogDTO, authenticatedUser) =>{
         const user = await User.findById(authenticatedUser.user._id)
@@ -130,32 +131,6 @@ class BlogService{
             return temporaryImage;
         }
     }
-    static getBlogById= async (blogId) =>{
-        let blog = await Blog.findById(blogId);
-        blog.views++;
-        blog.save();
-        const category = await blog.category;                        
-        let updateFields;
-        if(category!==null){
-        const isPermission = await category.users.some(user => user._id.equals());
-        if((category.status === 'Publish' && isPermission) || (category.status === 'Private' && isPermission) || (category.status === 'Publish' && !isPermission))
-                        updateFields = {
-                            isPermission: true
-                        }
-                        if(category.status === 'Private' && !isPermission)
-                        {
-                            updateFields = {
-                                isPermission: false
-                            };
-                        }
-                    }else{  
-                    updateFields = {
-                        isPermission: true
-                    };}
-                    console.log(updateFields);
-                    await Blog.findByIdAndUpdate(blog._id, updateFields);
-        return Blog.findById(blogId);
-    }
     static deleteBlogById = async (blogId,authenticatedUser) => {
         try {
             const blog = await Blog.findById(blogId);
@@ -168,8 +143,10 @@ class BlogService{
             );
             const deletedBlog = await Blog.findOneAndDelete({ _id: blogId });
             let user = await User.findById(blog.user._id);
-            user.totalBlog = user.totalBlog - 1;
-            await user.save();
+            if(blog.status==='Published'){
+                user.totalBlog = user.totalBlog - 1;
+                await user.save();
+            }
             return deletedBlog;}
             else{
                 return 1;
@@ -297,6 +274,17 @@ class BlogService{
             return null;
             }
         };
+        static getBlogById= async (blogId,authenticatedUser) =>{
+            let blog = await Blog.findById(blogId);
+            if(!blog) return null;
+            blog.views++;
+            blog.save();
+            const result = [];
+            result.push(blog);
+            const posts = await this.findAndUpdateLikeAndSave(result,authenticatedUser.user._id)
+            const posts2 = await this.findAndUpdatePermissions(posts,authenticatedUser.user._id);
+            return result[0];
+        }
         static listBlogPopularity = async (authenticatedUser, index) => {
             const pageSize = 6;
             const skip = (index - 1) * pageSize; // Số bài viết sẽ bỏ qua

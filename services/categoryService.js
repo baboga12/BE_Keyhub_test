@@ -110,8 +110,16 @@ class CategoryService {
         if (!categoryToEdit) {
             return null;
         }
-        console.log(categoryToEdit.isApproved)
-        console.log(isApproved)
+        const listCategory = await categoryModel.find();
+        for(const category of listCategory)
+        {
+            if(category._id.equals(categoryToEdit._id)){
+                continue;
+            }
+            if (category.name.toLowerCase() === newName.toLowerCase()) {
+                return 3;
+            }
+        }
         if (categoryToEdit.isAdmin._id == authenticationUser._id  || authenticationUser.roles == 'Admin' ) {
             categoryToEdit.name = newName || categoryToEdit.name;
             categoryToEdit.description = newDescription || categoryToEdit.description;
