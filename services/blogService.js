@@ -9,6 +9,7 @@ const followModel = require('../models/followModel');
 const Share = require('../models/Blog/shareModel');
 const { post } = require('../routes/userRoutes');
 const usermodel = require('../models/usermodel');
+const Notification= require('../models/notificationModel')
 class BlogService{
     static createBlog =  async (blogDTO, authenticatedUser) =>{
         const user = await User.findById(authenticatedUser.user._id)
@@ -133,6 +134,7 @@ class BlogService{
     static deleteBlogById = async (blogId,authenticatedUser) => {
         try {
             const blog = await Blog.findById(blogId);
+            await Notification.deleteMany({blog: blog._id})
             if(blog.user._id == authenticatedUser._id || authenticatedUser.roles === 'Admin'){
             const tagIds = blog.tags;
 

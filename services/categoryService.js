@@ -161,10 +161,10 @@ class CategoryService {
         return { ...category.toObject(), statusUser };    }
     static async deleteCategoryById(categoryId, authenticationUser) {
         const category = await Category.findById(categoryId);
+        await Notification.deleteMany({category: category._id})
         if (!category) {
             return null;
         }
-        console.log( authenticationUser.roles)
         if (category.isAdmin._id == authenticationUser._id  || authenticationUser.roles == 'Admin' ) {
             await Category.findOneAndDelete({ _id: categoryId });
             return category;
