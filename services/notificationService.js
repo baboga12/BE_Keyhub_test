@@ -101,8 +101,11 @@ class NotificationService{
     static listNotifyByUser = async (userId) =>{
         const user = await User.findById(userId);
         if(!user)  return 1;
-        const notification = await Notification.find({recipient: user._id}).sort({ isRead: 1, createdAt: -1 });
-        return notification;
+        const notifications = await Notification.find({
+            recipient: user._id,
+            type: { $ne: 'Chat' } // Sử dụng $ne để loại trừ type là 'Chat'
+        }).sort({ isRead: 1, createdAt: -1 });
+        return notifications;
     }
     static notifyAccept = async (authenticatedUser, userId, categoryId) =>{
         const userAuthenticated = await User.findById(authenticatedUser);
