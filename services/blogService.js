@@ -51,9 +51,8 @@ class BlogService{
         await blog.addTags(blogDTO.tagIds);
         }
         await temporaryImageModel.findOneAndDelete({user: authenticatedUser.user._id})
-        if(!blog.status==='Published'){
+        if(blog.isApproved===false){
             user.totalBlog = user.totalBlog + 1;
-            await user.save();
         }
         return blog;
     }
