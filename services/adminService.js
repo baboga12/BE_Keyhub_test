@@ -28,5 +28,11 @@ class AdminService{
     await setting.save();
     return setting;
  }
+ static deleteSettingBlog = async (settingId) =>{
+    const setting = await Setting.findById(settingId);
+    if(!setting) return 1;
+    await setting.deleteOne();
+    return setting;
+ }
 }
 module.exports = AdminService;

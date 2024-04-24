@@ -1476,6 +1476,7 @@ const sendMessage = async (req, res) => {
         result: null,
       });
     }
+    await Service.notificationService.notifyChat(sendMessage,authenticatedUser.user)
     console.log('Send message success');
     console.log('--------------------------------------------------------------------------------------------------------------------')
       return res.status(200).json({

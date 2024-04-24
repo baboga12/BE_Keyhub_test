@@ -2,7 +2,7 @@ const Notification = require('../models/notificationModel')
 const Blog = require('../models/Blog/blogModel')
 const User = require('../models/usermodel')
 const Category = require('../models/Blog/categoryModel')
-
+const Chat = require('../models/Chat/groupModel')
 class NotificationService{
     static notifyComment = async (blogId, userAuthentication)=>{
         const blog  = await Blog.findById(blogId)
@@ -164,6 +164,30 @@ class NotificationService{
         });
         return notification.save();
     }
-}
+    static notifyChat = async (message, authenticatedUser) =>{
+        console.log(message)
+        const authenticationUser = await User.findById(authenticatedUser._id);
 
+        await Notification.deleteMany({
+            chat: message.chat._id,
+            type: 'Chat',
+        })
+
+        const listUser =  message.chat.listUser;
+        for(const user of listUser)
+            {
+                if(authenticationUser._id.equals(user._id)){
+                    continue;
+                }
+                const notification = new Notification({
+                    sender: authenticationUser._id,
+                    message: message._id,
+                    type: 'Chat',
+                    recipient: user._id,
+                });
+                await notification.save();
+            }
+            return 3;
+}
+}
 module.exports = NotificationService;
