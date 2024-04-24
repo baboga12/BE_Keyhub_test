@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const autopopulate = require('mongoose-autopopulate');
 
 
-const settingSchema = new mongoose.Schema({
+const settingBlogSchema = new mongoose.Schema({
     value: {
         type: String,
         required: true
     }
   }, { timestamps: true, strict: false });
-  settingSchema.plugin(autopopulate);
+  settingBlogSchema.plugin(autopopulate);
 
-module.exports = mongoose.model('Setting', settingSchema);;
+module.exports = mongoose.model('SettingBlog', settingBlogSchema);;

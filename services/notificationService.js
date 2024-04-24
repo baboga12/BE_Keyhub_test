@@ -101,7 +101,7 @@ class NotificationService{
     static listNotifyByUser = async (userId) =>{
         const user = await User.findById(userId);
         if(!user)  return 1;
-        const notification = await Notification.find({recipient: user._id}).sort({ isRead: 1, createdAt: -1 });;
+        const notification = await Notification.find({recipient: user._id}).sort({ isRead: 1, createdAt: -1 });
         return notification;
     }
     static notifyAccept = async (authenticatedUser, userId, categoryId) =>{
@@ -139,7 +139,7 @@ class NotificationService{
         return notification;
     }
     static listNotifyByType = async (type,user_id) =>{
-        const notification = await Notification.find({type: type, recipient: user_id});
+        const notification = await Notification.find({type: type, recipient: user_id}).sort({ isRead: 1, createdAt: -1 });;
         return notification;
     }
     static evaluateBlogCategory = async(blogId, authenticatedUser,status) =>{

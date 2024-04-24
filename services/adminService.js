@@ -1,7 +1,7 @@
 const Setting = require('../models/settingModel')
 
 class AdminService{
- static addSetting= async (value) =>{
+ static addSettingsBlog= async (value) =>{
     const setting = new Setting({
         value: value
     });

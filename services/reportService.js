@@ -99,5 +99,11 @@ class ReportService {
         const reportType = await ReportType.find();
         return reportType;
     }
+    static addTypeReport = async (value)=>{
+        const reportType = new ReportType({
+            value: value,
+        })
+        return reportType.save();
+    };
 }
 module.exports = ReportService;
