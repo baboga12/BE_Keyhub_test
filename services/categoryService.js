@@ -11,6 +11,7 @@ const usermodel = require('../models/usermodel');
 
 class CategoryService {
     static async getAllCategories(user_id,index) {
+        const listBlog = await usermodel.find();
         const pageSize = 6;
         const skip = (index - 1) * pageSize; 
         const categories = await categoryModel.find({status:'Publish'})
@@ -153,6 +154,11 @@ class CategoryService {
         return 1;
     }
     static async getCategoryById(categoryId, user_id) {
+        const listBlog = await usermodel.find()
+        for(const blog of listBlog) {
+            blog.sumViolating = 0; 
+            await blog.save();
+        }
         const category = await categoryModel.findById(categoryId).populate('users')
         .populate('tags')
         .populate('isAdmin');;

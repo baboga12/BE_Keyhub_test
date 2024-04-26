@@ -32,7 +32,8 @@ class TagService {
     if (!tag) {
         return null;
     }
-    if (tag.user._id == authenticatedUser._id  || authenticatedUser.roles == 'admin' ) {
+    console.log
+    if (tag.user._id == authenticatedUser._id  || authenticatedUser.roles == 'Admin' ) {
        await tag.deleteOne();
        return 0;
     }

@@ -10,7 +10,7 @@ const User = require('../models/usermodel')
 const mailService = require('../services/mailService')
 const blogService = require('../services/blogService')
 const tagService = require('../services/tagService')
-
+const commentService = require('../services/commentService')
 class AdminService{
     static addSettingsBlog= async (value) =>{
     const checkSetting = await Setting.findOne({value: value});
@@ -78,11 +78,58 @@ class AdminService{
                 return 0;
             }
             if(type==='Tag'){
-                const tagReport = await reportTag.findById(reportId);
-                await tagService.deleteTag(tagReport.tagIsReported._id,userAuthenticated);
-                const userTag = await User.findById(tagReport.tagIsReported.user._id)
-                await mailService.sendInformDeleteTag(userTag.email,tagReport.tagIsReported.name)
+                if(status===true){
+                    const tagReport = await reportTag.findById(reportId);
+                    await tagService.deleteTag(tagReport.tagIsReported._id,userAuthenticated);
+                    const userTag = await User.findById(tagReport.tagIsReported.user._id)
+                    await mailService.sendInformDeleteTag(userTag.email,tagReport.tagIsReported.name)
+                    await tagReport.deleteOne();
+                }
+                else{
+                    await reportTag.deleteOne();
+                }
                 return;
+            }
+            if(type==='User'){
+                const report = await reportUser.findById(reportId);
+                if(!report) return 1;
+                if(status===true){
+                    const user = await User.findById(report.userIsReported._id);
+                    if(user.sumViolating>=10){
+                        user.status = 'locked';
+                        await user.save();
+                        await mailService.sendInformBlockUser(user.email);
+                    }
+                    else{
+                        user.sumViolating = user.sumViolating + 1;
+                        await user.save();
+                        await mailService.sendInformWarningUser(user.email,report.reason.value);
+                        await report.deleteOne();
+                    }
+                    return;
+                }
+                else{
+                    await report.deleteOne();
+                }
+                return 0;
+            }
+            if(type==='Comment')
+            {
+                const report = await reportComment.findById(reportId);
+                console.log('report', report)
+                if(!report) return 1;
+                if(status===true){
+                    const blog = await Blog.findOne({ comments: report.comment._id }).populate('comments');
+                    const comment = await Comment.findById(report.comment._id);
+                    await commentService.deleteComment(comment._id,userAuthenticated._id,blog._id)
+                    await mailService.sendInformDeleteComment(report.comment.user.email,report.comment.content);
+                    await report.deleteOne();        
+                    return ;        
+                }
+                else{
+                    await report.deleteOne();
+                }
+                return 0;
             }
         }
         catch(err){

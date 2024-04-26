@@ -959,7 +959,7 @@ const reportComment = async (req, res) => {
     });
   }
   const reportTag = await Service.reportService.reportComment(commentId,authenticatedUser.user,message,reason);
-  if(reportUser===3)
+  if(reportTag===3)
   {
     console.log('Reason not found');
     console.log('--------------------------------------------------------------------------------------------------------------------')
