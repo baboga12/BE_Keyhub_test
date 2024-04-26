@@ -34,6 +34,14 @@ class CategoryService {
         const categoriesWithUserStatus = await Promise.all(categoriesWithUserStatusPromises);
         return { categories: categoriesWithUserStatus, size: size}
     }
+    static async getAllCategory() {
+        const categories = await Category.find();
+        if(!categories)
+        {
+            return null;
+        }
+        return categories;
+    }
     static async countDocumentsCategory() {
         const count = await Category.countDocuments();
         const totalPages = Math.ceil(count / 6); // Tính số lượng trang

@@ -17,6 +17,7 @@ class TagService {
     }
     static async getAllTags() {
         const tags = await Tag.find();
+        if(!tags) return null;
         return tags
     }
     static async getTagById(tagId) {
@@ -32,12 +33,15 @@ class TagService {
         return null;
     }
     if (tag.user._id == authenticatedUser._id  || authenticatedUser.roles == 'admin' ) {
-        console.log('Have permison')
        await tag.deleteOne();
        return 0;
     }
     else
     return 1;
+    }
+    static  getAllTags= async() =>{
+        const tags = await Tag.find().sort({createdAt: -1});
+        return tags
     }
 
 }

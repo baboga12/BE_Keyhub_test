@@ -10,6 +10,12 @@ const Share = require('../models/Blog/shareModel');
 const { post } = require('../routes/userRoutes');
 const usermodel = require('../models/usermodel');
 const Notification= require('../models/notificationModel')
+const reportBlogModel = require('../models/retportBlogModel');
+const shareModel = require('../models/Blog/shareModel')
+const { reportBlog } = require('./reportService');
+const commentModel = require('../models/Blog/commentModel')
+const commentService = require('../services/commentService')
+
 class BlogService{
     static createBlog =  async (blogDTO, authenticatedUser) =>{
         const user = await User.findById(authenticatedUser.user._id)
@@ -142,6 +148,17 @@ class BlogService{
                 { _id: { $in: tagIds } },
                 { $inc: { sumBlog: -1 } }
             );
+            const listReportBlog = await reportBlogModel.deleteMany({blogIsReported: blog._id});
+            const listComment = blog.comments;
+            for(const comment of listComment){
+                await commentService.deleteComment(comment._id,authenticatedUser,blog._id);
+            }
+            const listShareBlog = await shareModel.find({listBlog: blog._id})
+            const updatedShare = await Share.findOneAndUpdate(
+                { listBlog: blogId },
+                { $pull: { listBlog: blogId } }, 
+                { new: true } // Trả về bản ghi Share đã được cập nhật
+            );
             const deletedBlog = await Blog.findOneAndDelete({ _id: blogId });
             let user = await User.findById(blog.user._id);
             if(blog.status==='Published'){
@@ -187,7 +204,6 @@ class BlogService{
                                     .populate('listUserLikes');
     }
     
-
 
 
 
@@ -560,6 +576,17 @@ class BlogService{
                     return null;
                 }
                 return posts2;
+            } catch (error) {
+                console.error("Error fetching most active posts:", error);
+                return null;
+            }
+        }
+        static getAllBlog = async ()=>{
+            try {
+                const query = await Blog.find()
+                    .sort({ createdAt: -1 })
+                if(!query) return null;
+                return query;
             } catch (error) {
                 console.error("Error fetching most active posts:", error);
                 return null;

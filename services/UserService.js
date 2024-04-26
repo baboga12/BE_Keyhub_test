@@ -18,6 +18,13 @@ static getUserInfo = async (userId) => {
   }
   return user;
 };
+static getAllUser = async () => {
+  const listUsers = await UserModel.find();
+  if (!listUsers) {
+    return null;
+  }
+  return listUsers;
+}
 static updateUserInfo = async (authenticatedUser, profileDTO,res ) =>{
 
     const user_id = authenticatedUser.user._id
