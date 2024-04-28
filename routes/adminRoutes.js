@@ -29,7 +29,7 @@ router.post('/decentralization',middleware.authenticateToken,middleware.filter('
 
 router.delete('/:blogId/deleteBlog',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.deleteBlogById)
 router.delete('/:tagId/deleteTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.deleteTags)
-// router.delete('/:categoryId/deleteCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.dele)
+router.delete('/:categoryId/deleteCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.deleteCategory)
 
 
 module.exports = router;

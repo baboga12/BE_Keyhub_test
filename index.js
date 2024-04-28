@@ -102,6 +102,22 @@ io.on("connection", (socket) => {
   }
   });
 
+  socket.on("interactionMessage", ({ fromUser, toUser,type, data }) => {
+    console.log(`User ${fromUser} interacts with user ${toUser}`);
+    if (fromUser === toUser) {
+      console.log("The same user is interacting with itself. No need to send socket.");
+      return; 
+    }
+    const recipientSocket = getUser(toUser)?.socketId;
+    if (recipientSocket) {
+      console.log("User receiver is online.");
+      io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
+    }
+    else{ console.log("User receiver is not online.");
+  }
+  });
+
+
   socket.on("disconnect", () => {
     console.log("User disconnect: ", socket.id);
     removeUser(socket.id);

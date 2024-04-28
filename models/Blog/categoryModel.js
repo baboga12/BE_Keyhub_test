@@ -20,7 +20,7 @@ const categorySchema = new mongoose.Schema({
       return this.users.length;
     },
   },
-  isAdmin: {type: mongoose.Schema.Types.ObjectId, ref:'User',autopopulate : false},
+  isAdmin: {type: mongoose.Schema.Types.ObjectId, ref:'User',autopopulate : true},
   users: [{type: mongoose.Schema.Types.ObjectId, ref:'User',autopopulate : false}],
   avatar: {
     publicId: { type: String, default: null },

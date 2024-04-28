@@ -12,7 +12,7 @@ const mailService = require('../services/mailService')
 const blogService = require('../services/blogService')
 const tagService = require('../services/tagService')
 const commentService = require('../services/commentService')
-const { categoryService } = require('.')
+const categoryService = require('../services/categoryService')
 class AdminService{
     static addSettingsBlog= async (value) =>{
     const checkSetting = await Setting.findOne({value: value});
@@ -193,11 +193,14 @@ class AdminService{
         return 0;
     }
     static deleteCategory = async (categoryId, authenticatedUser) => {
-        const category = await Category.findById(categoryId);
+        const category = await Category.findById(categoryId).populate();
         if(!category) return 1;
         await mailService.sendInformDeleteGroup(category.isAdmin.email,category.name);
         await categoryService.deleteCategoryById(category._id, authenticatedUser);
         return 0;
+    }
+    static blockedUser = async (userId, authenticatedUser) => {
+        
     }
 
 
