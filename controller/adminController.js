@@ -587,8 +587,39 @@ const deleteTags = async (req, res, next) => {
         result: null,
     });
 }   
-
-
+const deleteCategory = async (req, res) => {
+    const categoryId = req.params.categoryId;
+    const authenticatedUser = req.user;
+    if(!categoryId){
+        console.log('CategoryId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'CategoryId is required',
+            result: null,
+        });
+    }
+    const deleteCategory = await Service.adminService.deleteCategory(categoryId,authenticatedUser.user);
+    if(deleteCategory===1){
+        console.log('Not found category');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found category',
+            result: null,
+        });
+    }
+    console.log('Delete category successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Delete category successfully',
+        result: null,
+    });
+}
 module.exports = {
     addSettingsBlog,
     addTypeReport,editSettingsBlog,
@@ -601,5 +632,5 @@ module.exports = {
     getAllCategory,getAllUser,
     evaluateReport,getAllUserBlocked,
     deleteBlogById,openAccount,
-    decentralization,deleteTags
+    decentralization,deleteTags,deleteCategory
 }

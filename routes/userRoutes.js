@@ -36,6 +36,7 @@ router.post('/follow/:userId',auth.authenticateToken,userController.followUser)
 router.post('/deleteComment',auth.authenticateToken,userController.deleteComment)
 
 //Chat
+router.post('/checkIsReadChat',auth.authenticateToken,userController.checkIsReadChat)
 router.post('/singleChat',auth.authenticateToken,userController.singleChat)
 router.post('/groupChat',auth.authenticateToken,userController.groupChat)
 router.post('/addUserToGroup',auth.authenticateToken,userController.addUserToGroup)

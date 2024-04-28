@@ -2,6 +2,7 @@ const Group = require('../models/Chat/groupModel')
 const Message = require('../models/Chat/messageModel')
 const User = require('../models/usermodel')
 const Follow = require('../models/followModel')
+const notification = require('../models/notificationModel')
 
 
 class ChatService {
@@ -148,6 +149,21 @@ class ChatService {
         await chat.save();
         return chat;
     }
+    static updateIsRead = async (userId, chatId)=>{
+        const chat = await Group.findById(chatId);
+        let result = false;
+        const listNotify =  await notification.find({
+            chat: chatId,
+            recipient: userId,
+            type: 'Chat',
+        })
+        for(const notify of listNotify){
+            if(notify.recipient._id.equals(userId)&& notify.chat._id.equals(chat._id)){
+                result = notify.isRead;
+            }
+        }
+        return result;
+    }
     static listChatUsers = async (authenticationUser) => {
         const user = await User.findById(authenticationUser._id);
         const chats = await Group.find({
@@ -207,12 +223,32 @@ class ChatService {
         });
     
         const uniqueResult = removeDuplicates(result);
-    
-        uniqueResult.sort((a, b) => {
+        const chatWithStatus = uniqueResult.map(async chat => {
+            const isRead = await this.updateIsRead(authenticationUser._id, chat._id);  
+            return { ...chat.toObject(), isRead };
+        });
+        const resultRes = await Promise.all(chatWithStatus);
+        resultRes.sort((a, b) => {
             return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         });
     
-        return uniqueResult;
+        return resultRes;
+    }
+    static checkIsReadChat = async (authenticationUser,chatId)=> {
+        const chat = await Group.findById(chatId);
+        let isRead = true;
+        const listNotify =  await notification.find({
+            chat: chatId,
+            recipient: authenticationUser._id,
+            type: 'Chat',
+        })
+        for(const notify of listNotify){
+            if(notify.recipient._id.equals(authenticationUser._id)&& notify.chat._id.equals(chat._id)){
+                notify.isRead = true;
+                await notify.save();
+            }
+        }
+        return { ...chat.toObject(), isRead };
     }
     static findChatById= async (chatId) => {
         const chat = await Group.findById(chatId);
