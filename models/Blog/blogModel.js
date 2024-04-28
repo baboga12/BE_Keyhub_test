@@ -53,6 +53,7 @@ const blogSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  
 }, { timestamps: true, strict: false });
 blogSchema.plugin(autopopulate)
 

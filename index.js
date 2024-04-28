@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes');
-const Service = require('./services/chatService');
+const service = require('./services');
 const http = require('http');
 const { Server } = require("socket.io");
 const schedule = require('node-schedule');
@@ -120,6 +120,13 @@ mongoose.connect(`${process.env.Mongo_DB}`, {
 }).then(() => {
   console.log('Connected to Mongo');  
 });
+
+const job = schedule.scheduleJob('59 23 * * *', () => {
+  console.log('Running scheduled task at 23:59:59');
+  console.log('--------------------------------------------------------------------------------------------------------------------');
+  service.adminService.autoFilterBlog();
+});
+
 
 const port = process.env.PORT || 3001;
 server.listen(port, () => {

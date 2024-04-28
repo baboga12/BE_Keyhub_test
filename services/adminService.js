@@ -6,11 +6,13 @@ const reportTag = require('../models/reportTagModel')
 const Blog = require('../models/Blog/blogModel')
 const Category = require('../models/Blog/categoryModel')
 const Comment = require('../models/Blog/commentModel')
+const Tag = require('../models/Blog/tagModel')
 const User = require('../models/usermodel')
 const mailService = require('../services/mailService')
 const blogService = require('../services/blogService')
 const tagService = require('../services/tagService')
 const commentService = require('../services/commentService')
+const { categoryService } = require('.')
 class AdminService{
     static addSettingsBlog= async (value) =>{
     const checkSetting = await Setting.findOne({value: value});
@@ -69,7 +71,7 @@ class AdminService{
                     const blog = await Blog.findById(report.blogIsReported._id);
                     await blogService.deleteBlogById(blog._id,userAuthenticated);
                     await mailService.sendInformDeleteBlog(report.blogIsReported.user.email,report.blogIsReported.title);
-                    await report.deleteOne();        
+                    await reportBlog.deleteMany({blogIsReported: blog._id});        
                     return ;        
                 }
                 else{
@@ -116,14 +118,13 @@ class AdminService{
             if(type==='Comment')
             {
                 const report = await reportComment.findById(reportId);
-                console.log('report', report)
                 if(!report) return 1;
                 if(status===true){
                     const blog = await Blog.findOne({ comments: report.comment._id }).populate('comments');
                     const comment = await Comment.findById(report.comment._id);
                     await commentService.deleteComment(comment._id,userAuthenticated._id,blog._id)
                     await mailService.sendInformDeleteComment(report.comment.user.email,report.comment.content);
-                    await report.deleteOne();        
+                    await reportComment.deleteMany({comment: comment._id})        
                     return ;        
                 }
                 else{
@@ -136,5 +137,69 @@ class AdminService{
             console.log(err);
         }
     }
+    static deleteBlogById= async (blogId,authenticatedUser)=>{
+        const blog = await Blog.findById(blogId);
+        const userAuthenticated = await User.findById(authenticatedUser._id);
+        if(!blog) return 1;
+        await mailService.sendInformDeleteBlog(blog.user.email,blog.title);
+        await blogService.deleteBlogById(blog._id, userAuthenticated);
+        return 0;
+    }
+    static getAllUserIsBlock = async ()=>{
+        const users = await User.find({status: 'locked'});
+        return users;
+    }
+    static openAccount = async (userId)=>{
+        const user = await User.findById(userId);
+        if(!user) return 1;
+        user.status = 'completed';
+        await user.save();
+        await mailService.sendInformOpenAccount(user.email, user.name);
+        return 0;
+    }
+    static decentralization = async (userId, role )=>{
+        const user = await User.findById(userId);
+        if(!user) return 1;
+        user.roles = role;
+        await user.save();
+        return User.findById(user._id);
+    }
+    static autoFilterBlog = async ()=>{
+        const settingBlog = await Setting.find();
+        for(const setting of settingBlog){
+            const regex = new RegExp(setting.value, 'i');
+            console.log(regex)
+            const query = await Blog.find({
+                        $or: [
+                            { title: regex },
+                            { description: regex },
+                            { content: regex }
+                        ]
+            })
+            if(query.length>0){
+                for(const blog of query){
+                    console.log('Da gui')
+                    await blogService.deleteBlogByIdAuto(blog._id);
+                    await mailService.sendInformDeleteBlog(blog.user.email,blog.title);
+                }
+            }
+        }
+    }
+    static deleteTag = async (tagId,authenticatedUser)=>{
+        const tag = await Tag.findById(tagId);
+        if(!tag) return 1;
+        await mailService.sendInformDeleteTag(tag.user.email,tag.name);
+        await tagService.deleteTag(tag._id,authenticatedUser);
+        return 0;
+    }
+    static deleteCategory = async (categoryId, authenticatedUser) => {
+        const category = await Category.findById(categoryId);
+        if(!category) return 1;
+        await mailService.sendInformDeleteGroup(category.isAdmin.email,category.name);
+        await categoryService.deleteCategoryById(category._id, authenticatedUser);
+        return 0;
+    }
+
+
 }
 module.exports = AdminService;

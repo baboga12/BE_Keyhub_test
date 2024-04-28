@@ -16,11 +16,19 @@ router.get('/allBlog',middleware.authenticateToken,middleware.filter('Admin'),co
 router.get('/allTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllTag)
 router.get('/allCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllCategory)
 router.get('/allUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUser)
+router.get('/allUserBlocked',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUserBlocked)
 
 
 
 
 router.post('/evaluateReport',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.evaluateReport)
+router.post('/openAccount',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.openAccount)
+router.post('/decentralization',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.decentralization)
+
+
+
+router.delete('/:blogId/deleteBlog',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.deleteBlogById)
+router.delete('/:tagId/deleteTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.deleteTags)
 
 
 

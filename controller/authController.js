@@ -16,8 +16,9 @@ const register = async (req, res) => {
     });
     // Save user to database
     await user.save();
-
-    await AuthService.generateOTP(user);
+    if(userData.roles==='Client'){
+      await AuthService.generateOTP(user);
+    }
     console.log('Register user successfully')
     console.log('--------------------------------------------------------------------------------------------------------------------')
     // Return success response

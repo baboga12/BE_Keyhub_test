@@ -39,6 +39,11 @@ const NotificationSchema = new mongoose.Schema({
         ref: 'Message',
         autopopulate : true
     },
+    chat:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Group',
+        autopopulate : true
+    },
 }, { timestamps: true,  strict: false });
 NotificationSchema.plugin(autopopulate)
 module.exports = mongoose.model('Notification', NotificationSchema);

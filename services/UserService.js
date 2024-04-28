@@ -591,13 +591,20 @@ static search =async(keyword, type, authenticatedUser) =>
   }
   if(type==='User'){
     const users = await UserModel.find({
-        $or: [
+       $and:[
+        {
+          $or: [
             { name: regex },
             { email: regex },
             { description: regex },
             {second_name: regex },
             {address: regex }
         ]
+        },
+        {
+          status: 'completed'
+        }
+       ]
     });
     const filteredUsers = [];
 

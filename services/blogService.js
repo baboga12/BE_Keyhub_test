@@ -159,16 +159,48 @@ class BlogService{
                 { $pull: { listBlog: blogId } }, 
                 { new: true } // Trả về bản ghi Share đã được cập nhật
             );
-            const deletedBlog = await Blog.findOneAndDelete({ _id: blogId });
             let user = await User.findById(blog.user._id);
             if(blog.status==='Published'){
                 user.totalBlog = user.totalBlog - 1;
                 await user.save();
             }
+            const deletedBlog = await Blog.findOneAndDelete({ _id: blogId });
             return deletedBlog;}
             else{
                 return 1;
             }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    static deleteBlogByIdAuto = async (blogId) => {
+        try {
+            const blog = await Blog.findById(blogId);
+            await Notification.deleteMany({blog: blog._id})
+            const tagIds = blog.tags;
+
+            await Tag.updateMany(
+                { _id: { $in: tagIds } },
+                { $inc: { sumBlog: -1 } }
+            );
+            const listReportBlog = await reportBlogModel.deleteMany({blogIsReported: blog._id});
+            const listComment = blog.comments;
+            for(const comment of listComment){
+                await commentService.deleteCommentAuto(comment._id,blog._id);
+            }
+            const listShareBlog = await shareModel.find({listBlog: blog._id})
+            const updatedShare = await Share.findOneAndUpdate(
+                { listBlog: blogId },
+                { $pull: { listBlog: blogId } }, 
+                { new: true } // Trả về bản ghi Share đã được cập nhật
+            );
+            let user = await User.findById(blog.user._id);
+            if(blog.status==='Published'){
+                user.totalBlog = user.totalBlog - 1;
+                await user.save();
+            }
+            const deletedBlog = await Blog.findOneAndDelete({ _id: blogId });
+            return deletedBlog;
         } catch (error) {
             throw new Error(error.message);
         }
@@ -412,7 +444,10 @@ class BlogService{
                                 { content: regex }
                             ]
                         },
-                        { isApproved: false } // Điều kiện mới: isApproved phải là true
+                        { isApproved: false },
+                        {
+                            status:'Published'
+                        } // Điều kiện mới: isApproved phải là true
                     ]
                 }).populate('tags')
                 .populate('user')

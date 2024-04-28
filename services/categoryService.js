@@ -5,9 +5,10 @@ const cloudinary = require('cloudinary').v2;
 const UserRequest = require('../models/Blog/userRequestModel')
 const Invitation = require('../models/invitationModel')
 const Notify = require('../services/notificationService');
+const Notification = require('../models/notificationModel')
 const blogModel = require('../models/Blog/blogModel');
 const usermodel = require('../models/usermodel');
-
+const blogService = require('../services/blogService')
 
 class CategoryService {
     static async getAllCategories(user_id,index) {
@@ -180,6 +181,10 @@ class CategoryService {
             return null;
         }
         if (category.isAdmin._id == authenticationUser._id  || authenticationUser.roles == 'Admin' ) {
+            const listBlog = await blogModel.find({category: category._id})
+            for(const blog of listBlog){
+                blogService.deleteBlogById(blog._id,authenticationUser)
+            }
             await Category.findOneAndDelete({ _id: categoryId });
             return category;
         }
@@ -372,10 +377,17 @@ class CategoryService {
             const regex = new RegExp(key, 'i');
             const user = await User.findById(authenticatedUser._id);
             const query = await Category.find({
+               $and:[
+              {
                 $or: [
                     { name: regex },
                     { description: regex }
                 ]
+              },
+              {
+                status: 'Publish'
+              }
+               ]
             }).sort({ updatedAt: -1 });;
             const categoriesWithUserStatusPromises = query.map(async category => {
                 const statusUser = await this.getUserStatusInCategory1(category, user._id);  

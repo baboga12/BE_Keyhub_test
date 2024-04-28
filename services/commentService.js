@@ -69,7 +69,31 @@ class CategoryService {
             throw error;
         }
     };
-    
+    static deleteCommentAuto = async (commentId, blogId) => {
+        try {
+            const comment = await Comment.findById(commentId);
+            if (!comment) {
+                return 1; 
+            }
+            const blog = await Blog.findById(blogId);
+            if (!blog) {
+                return 2;
+            }
+                await CategoryService.deleteChildComments(comment._id, blog); // Thay đổi dòng này
+                const index = blog.comments.findIndex(comment => comment.equals(commentId));
+                if (index !== -1) {
+                    blog.comments.splice(index, 1); // Xóa comment cụ thể khỏi mảng
+                    const sumComment = blog.sumComment - 1;
+                    blog.sumComment = sumComment;
+                    await blog.save();
+                }
+                await Comment.findByIdAndDelete(commentId);
+                return comment;
+        } catch (error) {
+            console.error('Lỗi khi xóa bình luận:', error);
+            throw error;
+        }
+    };
     static deleteChildComments = async (commentId, blog = null) => {
         const comment = await Comment.findById(commentId).populate('replies');
         if (!comment) return;

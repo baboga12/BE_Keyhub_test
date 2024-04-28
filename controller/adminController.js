@@ -429,6 +429,166 @@ const evaluateReport = async (req, res) => {
         });
     }
 }
+const deleteBlogById = async (req,res) => {
+    const blogId = req.params.blogId;
+    const user = req.user;
+    if(!blogId) {
+        console.log('BlogId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'BlogId is required',
+            result: null,
+        });
+    }
+    const deleteBlog = await Service.adminService.deleteBlogById(blogId,user.user);
+    if(deleteBlog===1){
+        console.log('Not found blog');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found blog',
+            result: null,
+        });
+    }
+    console.log('Delete blog successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Delete blog successfully',
+        result: null,
+    });
+}
+const getAllUserBlocked = async (req, res) => {
+    const listUser = await Service.adminService.getAllUserIsBlock();
+    console.log('List all user blocked');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'List all user blocked',
+        result: listUser,
+    });
+}
+const openAccount = async (req, res) => {
+    const userId = req.body.userId;
+    if(!userId) {
+        console.log('UserId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'UserId is required',
+            result: null,
+        });
+    }
+    const openAccount = await Service.adminService.openAccount(userId);
+    if(openAccount===1){
+        console.log('Not found user');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found user',
+            result: null,
+        });
+    }
+    console.log('Open account successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Open account successfully',
+            result: null,
+        });
+}
+const decentralization = async (req, res) => {
+    const {userId,role} = req.body;
+    if(!userId) {
+        console.log('UserId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'UserId is required',
+            result: null,
+        });
+    }
+    if(!role){
+        console.log('Role is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Role is required',
+            result: null,
+        });
+    }
+    const decentralization = await Service.adminService.decentralization(userId,role);
+    if(decentralization===1){
+        console.log('Not found user');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found user',
+            result: null,
+        });
+    }
+    console.log('Decentralization successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Decentralization successfully',
+            result: decentralization,
+        });
+}
+
+
+
+
+////////////////////////////////////////////////////////////////   Tags //////////////////////////////////////////////////////////////////
+const deleteTags = async (req, res, next) => {
+    const tagId = req.params.tagId;
+    const authenticatedUser = req.user;
+    if(!tagId){
+        console.log('TagId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'TagId is required',
+            result: null,
+        });
+    }
+    const deleteTag = await Service.adminService.deleteTag(tagId,authenticatedUser.user);
+    if(deleteTag===1){
+        console.log('Not found tag');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found tag',
+            result: null,
+        });
+    }
+    console.log('Delete tag successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Delete tag successfully',
+        result: null,
+    });
+}   
+
+
 module.exports = {
     addSettingsBlog,
     addTypeReport,editSettingsBlog,
@@ -439,5 +599,7 @@ module.exports = {
     getALlBlog,
     getAllTag,
     getAllCategory,getAllUser,
-    evaluateReport
+    evaluateReport,getAllUserBlocked,
+    deleteBlogById,openAccount,
+    decentralization,deleteTags
 }

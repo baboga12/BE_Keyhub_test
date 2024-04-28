@@ -169,10 +169,6 @@ class NotificationService{
     static notifyChat = async (message, authenticatedUser) =>{
         const authenticationUser = await User.findById(authenticatedUser._id);
 
-        await Notification.deleteMany({
-            chat: message.chat._id,
-            type: 'Chat',
-        })
 
         const listUser =  message.chat.listUser;
         for(const user of listUser)
@@ -180,10 +176,16 @@ class NotificationService{
                 if(authenticationUser._id.equals(user._id)){
                     continue;
                 }
+                await Notification.deleteMany({
+                    chat: message.chat._id,
+                    recipient: user._id,
+                    type: 'Chat',
+                })
                 const notification = new Notification({
                     sender: authenticationUser._id,
                     message: message._id,
                     type: 'Chat',
+                    chat: message.chat._id,
                     recipient: user._id,
                 });
                 await notification.save();
