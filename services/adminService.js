@@ -19,6 +19,7 @@ const categoryService = require('../services/categoryService')
 
 class AdminService{
     static addSettingsBlog= async (value) =>{
+    value = value.trim();
     const checkSetting = await Setting.findOne({value: value});
     if(checkSetting)
     {

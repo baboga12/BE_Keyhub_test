@@ -100,6 +100,7 @@ class ReportService {
         return reportType;
     }
     static addTypeReport = async (value)=>{
+        value = value.trim();
         const reportCheck = await ReportType.findOne({value: value});
         if(reportCheck){
             return 1;
