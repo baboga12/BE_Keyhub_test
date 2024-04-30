@@ -102,8 +102,9 @@ class AdminService{
                 if(!report) return 1;
                 if(status===true){
                     const user = await User.findById(report.userIsReported._id);
-                    if(user.sumViolating>=10){
+                    if(user.sumViolating=10){
                         user.status = 'locked';
+                        await report.deleteMany({userIsReported: report.userIsReported._id});
                         await user.save();
                         await mailService.sendInformBlockUser(user.email);
                     }
@@ -158,6 +159,9 @@ class AdminService{
         const user = await User.findById(userId);
         if(!user) return 1;
         user.status = 'completed';
+        if(user.sumViolating===10){
+            user.sumViolating = 0;
+        }
         await user.save();
         await mailService.sendInformOpenAccount(user.email, user.name);
         return 0;

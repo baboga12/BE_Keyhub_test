@@ -1197,7 +1197,7 @@ const deleteComment= (title)=>{
                               <tr>
                                 <td class="pad">  
                                   <div style="color:#000000;direction:ltr;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:16.8px;">
-                                      <p>Chúng tôi muốn thông báo rằng Tags của bạn trên hệ thống của chúng tôi đã được phát hiện vi phạm vào quy tắc chung mà chúng tôi thiết lập. Tag đã được loại bỏ và chúng tôi đưa ra thông báo này để bạn nhận biết về tình trạng này.</p>
+                                      <p>Chúng tôi muốn thông báo rằng Comment của bạn trên hệ thống của chúng tôi đã được phát hiện vi phạm vào quy tắc chung mà chúng tôi thiết lập. Comment đã được loại bỏ và chúng tôi đưa ra thông báo này để bạn nhận biết về tình trạng này.</p>
                                       <table class="heading_block block-4" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                           <tr>
                                             <td class="pad">
