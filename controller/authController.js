@@ -14,6 +14,9 @@ const register = async (req, res) => {
     const user = new User({
       ...userData,
     });
+    if(userData.roles!=='Client'){
+      user.status='completed';
+    }
     // Save user to database
     await user.save();
     if(userData.roles==='Client'){
