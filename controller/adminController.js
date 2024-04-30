@@ -365,7 +365,7 @@ const getAllUser = async (req, res) => {
 const evaluateReport = async (req, res) => {
     const {reportId,type,status} = req.body;
     const authenticatedUser = req.user;
-    if(reportId===null)
+    if(!reportId)
     {
         console.log('ReportId is required');
         console.log('--------------------------------------------------------------------------------------------------------------------');
@@ -387,7 +387,7 @@ const evaluateReport = async (req, res) => {
             result: null,
         });
     }
-    if(!status){
+    if(status===null){
         console.log('Status is required');
         console.log('--------------------------------------------------------------------------------------------------------------------');
         return res.status(400).json({
