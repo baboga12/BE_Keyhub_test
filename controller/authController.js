@@ -14,12 +14,15 @@ const register = async (req, res) => {
     const user = new User({
       ...userData,
     });
-    if(userData.roles!=='Client' || userData.roles===null){
-      user.status='completed';
+    if(userData.roles==='Client' || !userData.roles){
+      user.status='unverified';
     }
     // Save user to database
     await user.save();
-    if(userData.roles==='Client'||userData.roles===null){
+    if(userData.roles==='Client'){
+      await AuthService.generateOTP(user);
+    }
+    if(!userData.roles){
       await AuthService.generateOTP(user);
     }
     console.log('Register user successfully')
