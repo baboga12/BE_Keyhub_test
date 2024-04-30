@@ -17,6 +17,14 @@ router.get('/allTag',middleware.authenticateToken,middleware.filter('Admin'),con
 router.get('/allCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllCategory)
 router.get('/allUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUser)
 router.get('/allUserBlocked',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUserBlocked)
+router.get('/:month/chartAccess',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.access)
+router.get('/generalBlog',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalBlog)
+router.get('/generalTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalTag)
+router.get('/generalCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalCategory)
+router.get('/generalUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalUser)
+router.get('/blogInChartWeek',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartWeek)
+router.get('/:month/blogInChartMonth',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartMonth)
+router.get('/:year/blogInChartYear',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartYear)
 
 
 
@@ -24,6 +32,7 @@ router.get('/allUserBlocked',middleware.authenticateToken,middleware.filter('Adm
 router.post('/evaluateReport',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.evaluateReport)
 router.post('/openAccount',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.openAccount)
 router.post('/decentralization',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.decentralization)
+router.post('/blockedUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blockedUser)
 
 
 

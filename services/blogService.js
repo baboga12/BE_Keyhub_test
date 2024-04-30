@@ -15,6 +15,7 @@ const shareModel = require('../models/Blog/shareModel')
 const { reportBlog } = require('./reportService');
 const commentModel = require('../models/Blog/commentModel')
 const commentService = require('../services/commentService')
+const Access = require('../models/accessModel')
 
 class BlogService{
     static createBlog =  async (blogDTO, authenticatedUser) =>{
@@ -485,6 +486,13 @@ class BlogService{
         }
         static listBlogInFeed = async (authenticatedUser,pageIndex) =>{
         try{
+            const access = new Access({
+                user: authenticatedUser._id,
+            })
+            const checkAccess = await Access.findOne({user: authenticatedUser._id})
+            if(!checkAccess){
+                access.save();
+            }
             const pageSize = 6;
             const startIndex = (pageIndex - 1) * pageSize; 
             const endIndex = pageIndex * pageSize; 

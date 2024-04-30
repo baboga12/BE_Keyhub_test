@@ -1540,7 +1540,7 @@ const sendInformBlockUser = async (email) => {
   try {
     await transporter.sendMail(mailOptions);
     console.log('--------------------------------------------------------------------------------------------------------------------')
-    console.log('Sent email Delete Tag successfully');
+    console.log('Sent email inform Block Account successfully');
   } catch (error) {
     console.error('Error sending verification email:', error);
     throw error;

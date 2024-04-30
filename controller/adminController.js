@@ -620,6 +620,172 @@ const deleteCategory = async (req, res) => {
         result: null,
     });
 }
+const blockedUser= async (req, res) => {
+    const userId = req.body.userId;
+    if(!userId){
+        console.log('UserId is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'UserId is required',
+            result: null,
+        });
+    }
+    const blockedUser = await Service.adminService.blockedUser(userId);
+    if(blockedUser===1){
+        console.log('Not found user');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Not found user',
+            result: null,
+        });
+    }
+    console.log('Blocked user successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Blocked user successfully',
+            result: blockedUser,
+        });
+}
+
+
+///////////////////////////////////////////////////////////////  Chart API //////////////////////////////////////////////////////////////
+
+const access = async (req, res) => {
+    const month = req.params.month;
+    if(!month){
+        console.log('Month is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Month is required',
+            result: null,
+        });
+    }
+    const result = await Service.adminService.chartAccess(month);
+    console.log('Get chart access successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart access successfully',
+            result: result,
+        });
+}
+const generalBlog = async (req, res) => {
+    const result= await Service.adminService.chartGeneralBlog();
+    console.log('Get chart general blog successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart general blog successfully',
+            result: result,
+        });
+}
+const generalTag = async (req, res) => {
+    const result= await Service.adminService.chartGeneralTag();
+    console.log('Get chart general blog successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart general blog successfully',
+            result: result,
+        });
+}
+const generalCategory = async (req, res) => {
+    const result= await Service.adminService.chartGeneralCategory();
+    console.log('Get chart general blog successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart general blog successfully',
+            result: result,
+        });
+}
+const generalUser = async (req, res) => {
+    const result= await Service.adminService.chartGeneralUser();
+    console.log('Get chart general blog successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart general blog successfully',
+            result: result,
+        });
+}
+const blogInChartWeek = async (req, res) => {
+    const result= await Service.adminService.chartBlogInWeed();
+    console.log('Get chart blog in week successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart blog in week successfully',
+            result: result,
+        })
+}
+const blogInChartMonth = async (req, res) => {
+    const month = req.params.month;
+    if(!month){
+        console.log('Month is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Month is required',
+            result: null,
+        });
+    }
+    const result= await Service.adminService.charBlogInMonth(month);
+    console.log('Get chart blog in month successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart blog in mothn successfully',
+            result: result,
+        })
+}
+const blogInChartYear = async (req, res) => {
+    const year = req.params.year;
+    if(!year){
+        console.log('Year is required');
+        console.log('--------------------------------------------------------------------------------------------------------------------');
+        return res.status(400).json({
+            success: false,
+            statusCode: 400,
+            message: 'Year is required',
+            result: null,
+        });
+    }
+    const result= await Service.adminService.chartBlogInYear(year);
+    console.log('Get chart blog in year successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    return res.status(200).json(
+        {
+            success: true,
+            statusCode: 200,
+            message: 'Get chart blog in year successfully',
+            result: result,
+        })
+}
 module.exports = {
     addSettingsBlog,
     addTypeReport,editSettingsBlog,
@@ -632,5 +798,6 @@ module.exports = {
     getAllCategory,getAllUser,
     evaluateReport,getAllUserBlocked,
     deleteBlogById,openAccount,
-    decentralization,deleteTags,deleteCategory
+    decentralization,deleteTags,deleteCategory,blockedUser,access,generalBlog,generalTag,generalCategory,generalUser,blogInChartWeek,
+    blogInChartMonth,blogInChartYear
 }

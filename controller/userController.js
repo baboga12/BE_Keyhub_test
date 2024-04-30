@@ -915,12 +915,12 @@ const reportTag = async (req, res) => {
     });
   }
   if(reportTag===0){
-    console.log('Not found Blog');
+    console.log('Not found Tag');
     console.log('--------------------------------------------------------------------------------------------------------------------')
     return res.status(400).json({
       success:false,
       statusCode: 400,
-      message: 'Not found Blog',
+      message: 'Not found Tag',
       result: null,
     });
   }
