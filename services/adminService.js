@@ -104,7 +104,7 @@ class AdminService{
                     const user = await User.findById(report.userIsReported._id);
                     if(user.sumViolating=10){
                         user.status = 'locked';
-                        await report.deleteMany({userIsReported: report.userIsReported._id});
+                        await reportUser.deleteMany({userIsReported: report.userIsReported._id});
                         await user.save();
                         await mailService.sendInformBlockUser(user.email);
                     }
