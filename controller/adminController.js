@@ -365,7 +365,7 @@ const getAllUser = async (req, res) => {
 const evaluateReport = async (req, res) => {
     const {reportId,type,status} = req.body;
     const authenticatedUser = req.user;
-    if(!reportId)
+    if(reportId===null)
     {
         console.log('ReportId is required');
         console.log('--------------------------------------------------------------------------------------------------------------------');
