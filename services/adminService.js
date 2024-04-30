@@ -52,6 +52,9 @@ class AdminService{
     await setting.deleteOne();
     return setting;
     }
+    static getAllSettingBlog = async () =>{
+        return Setting.find();
+    }
     static getReportByType(type){
     if(type==='Blog'){
         return reportBlog.find();
@@ -177,7 +180,6 @@ class AdminService{
         const settingBlog = await Setting.find();
         for(const setting of settingBlog){
             const regex = new RegExp(setting.value, 'i');
-            console.log(regex)
             const query = await Blog.find({
                         $or: [
                             { title: regex },

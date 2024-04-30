@@ -126,6 +126,17 @@ const deleteSettingBlog = async(req, res) => {
         result: null,
     });
 }
+const getAllBlogSettings = async (req, res) => {
+    const result = await Service.adminService.getAllSettingBlog();
+    console.error('Get All Settings Success');
+    console.log('--------------------------------------------------------------------------------------------------------------------')
+    res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Get All Settings Success',
+        result: result,
+    });
+}
 const addTypeReport = async(req, res)=>{
     try{
         const value = req.body.value;
@@ -799,5 +810,5 @@ module.exports = {
     evaluateReport,getAllUserBlocked,
     deleteBlogById,openAccount,
     decentralization,deleteTags,deleteCategory,blockedUser,access,generalBlog,generalTag,generalCategory,generalUser,blogInChartWeek,
-    blogInChartMonth,blogInChartYear
+    blogInChartMonth,blogInChartYear,getAllBlogSettings
 }

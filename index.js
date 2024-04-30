@@ -137,8 +137,13 @@ mongoose.connect(`${process.env.Mongo_DB}`, {
   console.log('Connected to Mongo');  
 });
 
-const job = schedule.scheduleJob('59 23 * * *', () => {
+const job23 = schedule.scheduleJob('59 23 * * *', () => {
   console.log('Running scheduled task at 23:59:59');
+  console.log('--------------------------------------------------------------------------------------------------------------------');
+  service.adminService.autoFilterBlog();
+});
+const job = schedule.scheduleJob('*/2 * * * * *', () => {
+  console.log('Running scheduled task at 2s');
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
 });
