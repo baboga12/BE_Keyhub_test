@@ -111,6 +111,7 @@ class ReportService {
         return reportType.save();
     };
     static editTypeReport = async (reportTypeId, value)=>{
+        value = value.trim();
         const report = await ReportType.findById(reportTypeId);
         if(!report) return 1;
         const listReportType = await ReportType.find();

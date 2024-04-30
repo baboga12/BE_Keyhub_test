@@ -263,12 +263,12 @@ const deleteTypeReport = async (req, res) => {
             result: null,
         });
     }
-    console.error('Delete Setting Success');
+    console.error('Delete Type Report Success');
     console.log('--------------------------------------------------------------------------------------------------------------------')
     res.status(200).json({
         success: true,
         statusCode: 200,
-        message: 'Delete Setting Success',
+        message: 'Delete Type Report Success',
         result: null,
     });
 }
