@@ -223,7 +223,7 @@ class AdminService{
     ///Chart data///
     static chartAccess = async (month) => {
         const currentMonthStart = new Date(Date.UTC(new Date().getFullYear(), month - 1, 1));
-        const currentMonthEnd = new Date(Date.UTC(new Date().getFullYear(), month, 0));
+        const currentMonthEnd = new Date(Date.UTC(new Date().getFullYear(), month + 1, 0));
         const previousMonthStart = new Date(Date.UTC(new Date().getFullYear(), month - 2, 1));
         const previousMonthEnd = new Date(Date.UTC(new Date().getFullYear(), month - 1, 0));
         // Tính tổng số lượng truy cập của tháng hiện tại
@@ -267,7 +267,7 @@ class AdminService{
         const formattedResult = {};
         const daysInMonth = new Date(new Date().getFullYear(), month, 0).getDate();
         for (let i = 1; i <= daysInMonth; i++) {
-            formattedResult[`Ngày ${i}`] = 0;
+            formattedResult[`Day ${i}`] = 0;
         }
         // Sử dụng aggregation framework để lấy số lượng truy cập của từng ngày trong tháng
         const result = await Access.aggregate([
@@ -290,7 +290,7 @@ class AdminService{
         ]);
     
         result.forEach((item) => {
-            formattedResult[`Ngày ${item._id.dayOfMonth}`] = item.totalAccesses;
+            formattedResult[`Day ${item._id.dayOfMonth}`] = item.totalAccesses;
         });
     
     

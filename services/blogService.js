@@ -489,7 +489,14 @@ class BlogService{
             const access = new Access({
                 user: authenticatedUser._id,
             })
-            const checkAccess = await Access.findOne({user: authenticatedUser._id})
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1); 
+            const checkAccess = await Access.findOne({
+                user: authenticatedUser._id,
+                createdAt: { $gte: today, $lt: tomorrow }
+            })
             if(!checkAccess){
                 access.save();
             }
