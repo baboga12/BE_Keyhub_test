@@ -222,10 +222,11 @@ class AdminService{
 
     ///Chart data///
     static chartAccess = async (month) => {
-        const currentMonthStart = new Date(Date.UTC(new Date().getFullYear(), month - 1, 1));
-        const currentMonthEnd = new Date(Date.UTC(new Date().getFullYear(), month + 1, 0));
-        const previousMonthStart = new Date(Date.UTC(new Date().getFullYear(), month - 2, 1));
-        const previousMonthEnd = new Date(Date.UTC(new Date().getFullYear(), month - 1, 0));
+        const currentYear = new Date().getFullYear();
+        const currentMonthStart = new Date(Date.UTC(currentYear, month - 1, 1));
+        const currentMonthEnd = new Date(Date.UTC(currentYear, month, 0));
+        const previousMonthStart = new Date(Date.UTC(currentYear, month - 2, 1));
+        const previousMonthEnd = new Date(Date.UTC(currentYear, month - 1, 0));
         // Tính tổng số lượng truy cập của tháng hiện tại
         const currentMonthResult = await Access.aggregate([
             {
