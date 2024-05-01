@@ -301,19 +301,6 @@ class BlogService{
             return totalPages;
         }
         static listBlogNew = async (authenticatedUser, index) => {
-            // Access:  Từ 15 - 25 
-            const users = await User.find();
-
-            for (const user of users) {
-                const numAccesses = Math.floor(Math.random() * 11) + 15;
-
-                for (let i = 0; i < numAccesses; i++) {
-                    const randomDay = Math.floor(Math.random() * 31) + 1;
-                    const createdAt = new Date(new Date().getFullYear(), 3, randomDay);
-                    await Access.create({ user: user._id, createdAt });
-                }
-            }
-
             const pageSize = 6;
             const skip = (index - 1) * pageSize;
             try {
@@ -499,20 +486,20 @@ class BlogService{
         }
         static listBlogInFeed = async (authenticatedUser,pageIndex) =>{
         try{
-            // const access = new Access({
-            //     user: authenticatedUser._id,
-            // })
-            // const today = new Date();
-            // today.setHours(0, 0, 0, 0); 
-            // const tomorrow = new Date(today);
-            // tomorrow.setDate(today.getDate() + 1); 
-            // const checkAccess = await Access.findOne({
-            //     user: authenticatedUser._id,
-            //     createdAt: { $gte: today, $lt: tomorrow }
-            // })
-            // if(!checkAccess){
-            //     access.save();
-            // }
+            const access = new Access({
+                user: authenticatedUser._id,
+            })
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1); 
+            const checkAccess = await Access.findOne({
+                user: authenticatedUser._id,
+                createdAt: { $gte: today, $lt: tomorrow }
+            })
+            if(!checkAccess){
+                access.save();
+            }
             const pageSize = 6;
             const startIndex = (pageIndex - 1) * pageSize; 
             const endIndex = pageIndex * pageSize; 
