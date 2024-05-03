@@ -141,7 +141,7 @@ const job23 = schedule.scheduleJob('59 23 * * *', () => {
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
 });
-const job = schedule.scheduleJob('*/5 * * * *', () => {
+const job = schedule.scheduleJob('*/2 * * * *', () => {
   console.log('Running scheduled task at 2s');
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
