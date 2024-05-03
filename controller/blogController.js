@@ -1,5 +1,4 @@
 const BlogDTO = require('../dto/request/BlogDTO');
-const BlogModel = require('../models/Blog/blogModel');
 const Service = require('../services');
 const { Types } = require('mongoose');
 
@@ -148,7 +147,7 @@ const uploadImage = async (req,res) => {
       });
     }
   }
-  const editBlog = async (req,res) => {
+const editBlog = async (req,res) => {
     try {
       const authenticatedUser = req.user;
       const blogId = req.params.blogId;
@@ -229,8 +228,8 @@ const uploadImage = async (req,res) => {
         result: error.message,
       });
     }
-  }
-  const deleteBlogById = async (req, res) => {
+}
+const deleteBlogById = async (req, res) => {
     try {
       const blogId = req.params.blogId;
       const authenticatedUser = req.user;

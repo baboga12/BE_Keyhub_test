@@ -1,19 +1,13 @@
 const Blog = require('../models/Blog/blogModel')
 const User = require('../models/usermodel')
 const Tag = require('../models/Blog/tagModel')
-const Follow = require('../models/followModel')
 const temporaryImageModel = require('../models/Blog/temporaryImageModel');
-const mongoose = require('mongoose');
 const Category = require('../models/Blog/categoryModel');
 const followModel = require('../models/followModel');
 const Share = require('../models/Blog/shareModel');
-const { post } = require('../routes/userRoutes');
-const usermodel = require('../models/usermodel');
 const Notification= require('../models/notificationModel')
 const reportBlogModel = require('../models/retportBlogModel');
 const shareModel = require('../models/Blog/shareModel')
-const { reportBlog } = require('./reportService');
-const commentModel = require('../models/Blog/commentModel')
 const commentService = require('../services/commentService')
 const Access = require('../models/accessModel')
 
