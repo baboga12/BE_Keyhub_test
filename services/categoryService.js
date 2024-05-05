@@ -328,7 +328,7 @@ class CategoryService {
             const result = [];
             for(const category of categoriesWithUserStatus)
             {
-                if(!category.isAdmin.equals(userId))
+                if(!category.isAdmin._id.equals(userId))
                 {
                     result.push(category);
                 }
