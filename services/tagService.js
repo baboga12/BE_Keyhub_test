@@ -1,7 +1,7 @@
 const Tag = require('../models/Blog/tagModel');
 const User = require('../models/usermodel')
 class TagService {
-
+    
     static async addTag(name,categoryId, authenticatedUser){
         const user = await User.findById(authenticatedUser.user._id);
         const exitsTag = await Tag.findOne({name});

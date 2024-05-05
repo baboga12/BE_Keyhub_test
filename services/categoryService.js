@@ -3,7 +3,6 @@ const Category = require('../models/Blog/categoryModel')
 const User = require('../models/usermodel')
 const cloudinary = require('cloudinary').v2;
 const UserRequest = require('../models/Blog/userRequestModel')
-const Invitation = require('../models/invitationModel')
 const Notify = require('../services/notificationService');
 const Notification = require('../models/notificationModel')
 const blogModel = require('../models/Blog/blogModel');

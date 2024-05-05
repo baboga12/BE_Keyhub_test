@@ -11,7 +11,7 @@ router.post('/deleteTypeReport',middleware.authenticateToken,middleware.filter('
 router.patch('/editTypeReport',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.editTypeReport)
 
 
-router.get('/:type/listReport',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getListReportByType)
+router.get('/:type/listReport',middleware.authenticateToken,controller.adminController.getListReportByType)
 router.get('/allBlog',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getALlBlog)
 router.get('/allBlogSetting',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllBlogSettings)
 router.get('/allTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllTag)
@@ -30,7 +30,7 @@ router.get('/:year/blogInChartYear',middleware.authenticateToken,middleware.filt
 
 
 
-router.post('/evaluateReport',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.evaluateReport)
+router.post('/evaluateReport',middleware.authenticateToken,controller.adminController.evaluateReport)
 router.post('/openAccount',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.openAccount)
 router.post('/decentralization',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.decentralization)
 router.post('/blockedUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blockedUser)
