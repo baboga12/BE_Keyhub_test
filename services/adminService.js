@@ -91,6 +91,7 @@ class AdminService{
                 if(status===true){
                     const tagReport = await reportTag.findById(reportId);
                     await tagService.deleteTag(tagReport.tagIsReported._id,userAuthenticated);
+                    await reportTag.deleteMany({tagIsReported: tagReport.tagIsReported._id})
                     const userTag = await User.findById(tagReport.tagIsReported.user._id)
                     await mailService.sendInformDeleteTag(userTag.email,tagReport.tagIsReported.name)
                     await tagReport.deleteOne();
