@@ -476,8 +476,10 @@ class AdminService{
         }
         return blogStatsByDay;
     }
-    static charBlogInMonth = async(month) => {
-        const year = new Date().getFullYear();
+    static charBlogInCurrentMonth = async() => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1; // Lấy tháng hiện tại (lưu ý tháng bắt đầu từ 0)
         
         const monthStart = new Date(year, month - 1, 1); // Lấy ngày đầu tiên của tháng
         const monthEnd = new Date(year, month, 0); // Lấy ngày cuối cùng của tháng
@@ -498,9 +500,10 @@ class AdminService{
         }
         return blogStatsByDay;
     }
-    static chartBlogInYear = async (year) => {
+    static chartBlogInYear = async () => {
+        const year = new Date().getFullYear();
         const blogStatsByMonth = {};
-
+    
         for (let month = 1; month <= 12; month++) {
             const monthStart = new Date(year, month - 1, 1); // Lấy ngày đầu tiên của tháng
             const monthEnd = new Date(year, month, 0); // Lấy ngày cuối cùng của tháng
@@ -514,7 +517,6 @@ class AdminService{
             const monthName = this.getMonthName(month);
             blogStatsByMonth[monthName] = blogCount;
         }
-
         return blogStatsByMonth;
     }
     static getMonthName(month) {

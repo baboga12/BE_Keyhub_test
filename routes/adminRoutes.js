@@ -24,8 +24,8 @@ router.get('/generalTag',middleware.authenticateToken,middleware.filter('Admin')
 router.get('/generalCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalCategory)
 router.get('/generalUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.generalUser)
 router.get('/blogInChartWeek',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartWeek)
-router.get('/:month/blogInChartMonth',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartMonth)
-router.get('/:year/blogInChartYear',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartYear)
+router.get('/blogInChartMonth',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartMonth)
+router.get('/blogInChartYear',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.blogInChartYear)
 
 
 
