@@ -57,16 +57,16 @@ class AdminService{
     }
     static getReportByType(type){
     if(type==='Blog'){
-        return reportBlog.find();
+        return reportBlog.find().sort({ createdAt: -1 });
     }
     if(type==='User'){
-        return reportUser.find();
+        return reportUser.find().sort({ createdAt: -1 });
     }
     if(type==='Comment'){
-        return reportComment.find();
+        return reportComment.find().sort({ createdAt: -1 });
     }
     if(type==='Tag'){
-        return reportTag.find();
+        return reportTag.find().sort({ createdAt: -1 });
     }
     }
     static evaluateReport = async ( reportId,type,status,authenticatedUser) =>{
