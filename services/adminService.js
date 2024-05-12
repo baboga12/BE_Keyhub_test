@@ -454,7 +454,7 @@ class AdminService{
     static chartBlogInWeed = async()=>{
         const currentDate = new Date();
         const currentDay = currentDate.getDay(); // Lấy ngày hiện tại trong tuần (0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7)
-        const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
+        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday ', 'Saturday', 'Sunday '];
         const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDay + 1);
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(endOfWeek.getDate() + 6);
