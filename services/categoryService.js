@@ -474,7 +474,6 @@ class CategoryService {
             const userCount = await User.countDocuments({ _id: { $in: categoryUpdate.users } });
             categoryUpdate.sumUser = userCount;
             await categoryUpdate.save();
-          
             return 4;
         }
         return 3;
