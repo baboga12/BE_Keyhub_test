@@ -46,14 +46,7 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   phone: {
-    type: String,
-    validate: {
-      validator: (value) => {
-        const phoneRegex = /^\d{10}$/;
-        return validator.matches(value, phoneRegex);
-      },
-      message: 'Invalid phone number format',
-    },
+    type: String
   },
   gender: {
     type: String,
