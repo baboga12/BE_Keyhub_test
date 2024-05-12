@@ -5,7 +5,7 @@ const Follow = require('../models/followModel')
 const notification = require('../models/notificationModel')
 
 class ChatService {
-    static   = async (user_id, authenticatedUser_id) => {
+    static isUserFollowedByAuthenticatedUser   = async (user_id, authenticatedUser_id) => {
         try {
             const follow = await Follow.findOne({ user: authenticatedUser_id }); 
             if (!follow) {
