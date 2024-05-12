@@ -52,8 +52,24 @@ class AdminService{
     await setting.deleteOne();
     return setting;
     }
-    static getAllSettingBlog = async () =>{
-        return Setting.find();
+    static getAllSettingBlog = async () => {
+        const settings = await Setting.find(); // Truy vấn tất cả settings
+        const results = settings.map(setting => {
+            // Tạo một ngày mới với thời gian là 23:59:59
+            const dueDate = new Date();
+            dueDate.setHours(23, 59, 59, 999);
+
+            // Điều chỉnh thời gian cho múi giờ địa phương
+            const offset = dueDate.getTimezoneOffset() * 60000; // Chuyển đổi múi giờ sang milliseconds
+            const localDueDate = new Date(dueDate - offset); // Trừ đi múi giờ
+
+            // Thêm trường dueDate vào mỗi đối tượng setting
+            return {
+                ...setting.toObject(), // Chuyển document Mongoose thành plain object
+                dueDate: localDueDate.toISOString() // Định dạng ISO 8601
+            };
+        });
+        return results;
     }
     static getReportByType(type){
     if(type==='Blog'){
