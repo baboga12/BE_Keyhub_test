@@ -293,7 +293,7 @@ static invitationRequest = async(userId, categoryId, authenticatedUser) =>{
   const authenticatedUserFind = await UserModel.findById(authenticatedUser._id);
   const category = await Category.findById(categoryId);
   if (category.isAdmin._id.equals(authenticatedUserFind._id)  || authenticatedUserFind.roles === 'Admin' ) {
-        const user = usermodel.findById(userId);
+        const user = await usermodel.findById(userId);
         if(!user)
         {
           return 1;
