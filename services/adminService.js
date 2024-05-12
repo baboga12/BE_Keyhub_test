@@ -55,17 +55,19 @@ class AdminService{
     static getAllSettingBlog = async () => {
         const settings = await Setting.find(); // Truy vấn tất cả settings
         const results = settings.map(setting => {
-            // Tạo một ngày mới với thời gian là 23:59:59
-            const dueDate = new Date();
-            dueDate.setUTCHours(16, 59, 59, 999); // Set thời gian theo múi giờ UTC+0
+            // Tạo một đối tượng Date từ thời điểm hiện tại
+            const currentDate = new Date();
     
             // Điều chỉnh thời gian cho múi giờ Việt Nam (UTC+7)
-            dueDate.setUTCHours(dueDate.getUTCHours() + 7);
+            currentDate.setUTCHours(16); // Đặt giờ là 23 giờ theo múi giờ UTC+7
+            currentDate.setMinutes(59);
+            currentDate.setSeconds(59);
+            currentDate.setMilliseconds(999);
     
             // Thêm trường dueDate vào mỗi đối tượng setting
             return {
                 ...setting.toObject(), // Chuyển document Mongoose thành plain object
-                dueDate: dueDate.toISOString() // Định dạng ISO 8601
+                dueDate: currentDate.toISOString() // Định dạng ISO 8601
             };
         });
         return results;
