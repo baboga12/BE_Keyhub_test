@@ -57,12 +57,11 @@ class AdminService{
         const results = settings.map(setting => {
             // Tạo một ngày mới với thời gian là 23:59:59
             const dueDate = new Date();
-            dueDate.setHours(23, 59, 59, 999);
-
-            // // Điều chỉnh thời gian cho múi giờ địa phương
-            // const offset = dueDate.getTimezoneOffset() * 60000; // Chuyển đổi múi giờ sang milliseconds
-            // const localDueDate = new Date(dueDate - offset); // Trừ đi múi giờ
-
+            dueDate.setUTCHours(16, 59, 59, 999); // Set thời gian theo múi giờ UTC+0
+    
+            // Điều chỉnh thời gian cho múi giờ Việt Nam (UTC+7)
+            dueDate.setUTCHours(dueDate.getUTCHours() + 7);
+    
             // Thêm trường dueDate vào mỗi đối tượng setting
             return {
                 ...setting.toObject(), // Chuyển document Mongoose thành plain object
@@ -71,6 +70,7 @@ class AdminService{
         });
         return results;
     }
+    
     static getReportByType(type){
     if(type==='Blog'){
         return reportBlog.find().sort({ createdAt: -1 });
