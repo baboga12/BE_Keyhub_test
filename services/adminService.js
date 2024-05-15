@@ -501,6 +501,11 @@ class AdminService{
         return blogStatsByDay;
     }
     static chartBlogInYear = async () => {
+        const users = await User.find();
+        for(const user of users){
+            user.isLogin = true;
+            await user.save();
+        }
         const year = new Date().getFullYear();
         const blogStatsByMonth = {};
     

@@ -96,7 +96,11 @@ const userSchema = new mongoose.Schema({
   },
   sumViolating: { 
     type: Number, 
-    default:0}
+    default:0},
+  isLogin: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true,  strict: false });
 userSchema.pre('save', async function (next) {
   const user = this;
