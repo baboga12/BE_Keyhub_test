@@ -629,5 +629,11 @@ static listFiveUser= async()=>{
       .exec();
   return mostFollowedClientUser;
 }
+static updateStatusUser= async(userId)=> {
+  const user = await usermodel.findById(userId);
+  user.isLogin = true;
+  await user.save();
+  return 0;
+}
 }
 module.exports = UserService

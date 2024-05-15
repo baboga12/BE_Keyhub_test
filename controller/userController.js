@@ -1745,7 +1745,20 @@ const listFiveFollowerMost= async(req, res)=>{
     result: listUser,
   });
 }
+const updateStatusLogin = async (req, res) => {
+  const user = req.user;
+  const userUpdate =  await Service.userService.updateStatusUser(user.user);
+  console.log('Update status login success');
+  console.log('--------------------------------------------------------------------------------------------------------------------')
+  return res.status(200).json({
+    success: true,
+    statusCode: 200,
+    message: 'Update status login success',
+    result: null,
+  })
+};
 module.exports = {
+  updateStatusLogin,
   getUserInfo,
   updatedUserInfo,
   updateAvatar,

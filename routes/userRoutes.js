@@ -18,6 +18,7 @@ router.get('/listFiveUser',auth.authenticateToken, userController.listFiveFollow
 router.get('/listNotify',auth.authenticateToken, userController.listNotifyByUser);
 router.get('/listNotifyByType/:type',auth.authenticateToken, userController.listNotifyByType);
 router.post('/checkIsRead/:notifyId',auth.authenticateToken, userController.checkIsRead);
+router.post('/updateStatusLogin',auth.authenticateToken, userController.updateStatusLogin);
 
 //Report the user
 router.post('/reportUser',auth.authenticateToken, userController.reportUser);
