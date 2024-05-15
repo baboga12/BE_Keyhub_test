@@ -10,7 +10,7 @@ const usermodel = require('../models/usermodel');
 const blogService = require('../services/blogService')
 
 class CategoryService {
-    static async getCategoriesExcludingUserParticipationAndAdmin(userId, index) {
+    static async getAllCategories(userId, index) {
         try {
             const pageSize = 6;
             const skip = (index - 1) * pageSize; 
