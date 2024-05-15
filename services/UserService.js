@@ -622,5 +622,12 @@ static search =async(keyword, type, authenticatedUser) =>
       throw new Error(error.message);
   }
 }
+static listFiveUser= async()=>{
+  const mostFollowedClientUser = await UserModel.find({ roles: 'Client' })
+      .sort({ totalFollower: -1 })
+      .limit(5)
+      .exec();
+  return mostFollowedClientUser;
+}
 }
 module.exports = UserService
