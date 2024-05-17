@@ -9,6 +9,7 @@ const service = require('./services');
 const http = require('http');
 const { Server } = require("socket.io");
 const schedule = require('node-schedule');
+const moment = require('moment-timezone');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -136,8 +137,11 @@ mongoose.connect(`${process.env.Mongo_DB}`, {
   console.log('Connected to Mongo');  
 });
 
-const job23 = schedule.scheduleJob('59 23 * * *', () => {
-  console.log('Running scheduled task at 23:59:59');
+const timeZone = 'Asia/Ho_Chi_Minh'; // Xác định múi giờ Việt Nam
+
+const job23 = schedule.scheduleJob('59 59 23 * * *', () => {
+  const currentTime = moment().tz(timeZone).format();
+  console.log(`Running scheduled task at ${currentTime} (${timeZone})`);
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
 });
