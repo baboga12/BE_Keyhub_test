@@ -23,17 +23,16 @@ const run = async (req,res) => {
             message: 'AI content generated',
             result: text,
         })
-  } catch (err) {
+    } catch (err) {
     console.log(err);
     console.log('--------------------------------------------------------------------------------------------------------------------');
-    return res.status(500).json(
+    return res.status(err.status).json(
         {
             success: false,
-            statusCode:  500, 
+            statusCode: err.status, 
             message: err.status.text  || 'Error from Gemini AI',
             result: null,
         })
-  }
+    }
 }
-
 module.exports = {run}; // Export the run function
