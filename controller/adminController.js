@@ -759,7 +759,7 @@ const blogInChartMonth = async (req, res) => {
         {
             success: true,
             statusCode: 200,
-            message: 'Get chart blog in mothn successfully',
+            message: 'Get chart blog in month successfully',
             result: result,
         })
 }
