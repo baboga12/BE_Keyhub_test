@@ -26,11 +26,11 @@ const run = async (req,res) => {
     } catch (err) {
     console.log(err);
     console.log('--------------------------------------------------------------------------------------------------------------------');
-    return res.status(err.status).json(
+    return res.status(429).json(
         {
             success: false,
-            statusCode: err.status, 
-            message: err.status.text  || 'Error from Gemini AI',
+            statusCode: 429, 
+            message:'Error from Gemini AI',
             result: null,
         })
     }
