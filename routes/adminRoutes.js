@@ -18,6 +18,9 @@ router.get('/allTag',middleware.authenticateToken,middleware.filter('Admin'),con
 router.get('/allCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllCategory)
 router.get('/allUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUser)
 router.get('/allUserBlocked',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUserBlocked)
+
+
+//Chart
 router.get('/:month/chartAccess',middleware.authenticateToken,controller.adminController.access)
 router.get('/generalBlog',middleware.authenticateToken,controller.adminController.generalBlog)
 router.get('/generalTag',middleware.authenticateToken,controller.adminController.generalTag)

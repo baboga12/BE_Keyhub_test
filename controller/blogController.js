@@ -48,6 +48,16 @@ const createBlog = async (req, res) => {
             result: null
         });
         }
+        if(blog===2){
+          console.log('Title required 10 characters');
+          console.log('--------------------------------------------------------------------------------------------------------------------')
+          return res.status(400).json({
+            success:false,
+            statusCode: 400,
+            message: 'Title required 10 characters',
+            result: null,
+          });
+        }
         console.log('Create Blog successfully')
         console.log('--------------------------------------------------------------------------------------------------------------------')
         return res.status(200).json({
