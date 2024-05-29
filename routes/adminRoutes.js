@@ -13,7 +13,7 @@ router.patch('/editTypeReport',middleware.authenticateToken,middleware.filter('A
 
 router.get('/:type/listReport',middleware.authenticateToken,controller.adminController.getListReportByType)
 router.get('/allBlog',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getALlBlog)
-router.get('/allBlogSetting',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllBlogSettings)
+router.get('/allBlogSetting',middleware.authenticateToken,controller.adminController.getAllBlogSettings)
 router.get('/allTag',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllTag)
 router.get('/allCategory',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllCategory)
 router.get('/allUser',middleware.authenticateToken,middleware.filter('Admin'),controller.adminController.getAllUser)
