@@ -146,7 +146,7 @@ const job23 = schedule.scheduleJob('59 59 23 * * *', () => {
   service.adminService.autoFilterBlog();
 });
 const intervalId = setInterval(() => {
-  console.log('Running scheduled task at 2s');
+  console.log('Running scheduled task at 5m');
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
 }, 300000); 

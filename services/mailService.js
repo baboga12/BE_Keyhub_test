@@ -2908,19 +2908,20 @@ const sendInformWarningUser = async (email, reason) => {
   const mailOptions = {
     from: 'baboga12@gmail.com',
     to: email,
-    subject: 'Cảnh báo vi phạm - BRANIAC SOCIAL MEDIA ',
+    subject: 'Violation Warning - BRANIAC SOCIAL MEDIA',
     html: warningUser(reason),
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('--------------------------------------------------------------------------------------------------------------------')
-    console.log('Sent email Delete Tag successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    console.log('Sent email successfully');
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Error sending warning email:', error);
     throw error;
   }
 };
+
 const sendInformBlockUser = async (email) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -2932,20 +2933,21 @@ const sendInformBlockUser = async (email) => {
   const mailOptions = {
     from: 'baboga12@gmail.com',
     to: email,
-    subject: 'Vi phạm - BRANIAC SOCIAL MEDIA ',
+    subject: 'Violation - BRANIAC SOCIAL MEDIA',
     html: blockUser(),
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('--------------------------------------------------------------------------------------------------------------------')
-    console.log('Sent email inform Block Account successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    console.log('Sent email to inform Block Account successfully');
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Error sending block account email:', error);
     throw error;
   }
 };
-const sendInformDeleteComment = async (email,title) => {
+
+const sendInformDeleteComment = async (email, title) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -2956,20 +2958,21 @@ const sendInformDeleteComment = async (email,title) => {
   const mailOptions = {
     from: 'baboga12@gmail.com',
     to: email,
-    subject: 'Vi phạm - BRANIAC SOCIAL MEDIA ',
+    subject: 'Violation - BRANIAC SOCIAL MEDIA',
     html: deleteComment(title),
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('--------------------------------------------------------------------------------------------------------------------')
-    console.log('Sent email Delete Tag successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    console.log('Sent email to inform about comment deletion successfully');
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Error sending comment deletion email:', error);
     throw error;
   }
 };
-const sendInformOpenAccount = async (email,name) => {
+
+const sendInformOpenAccount = async (email, name) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -2980,16 +2983,16 @@ const sendInformOpenAccount = async (email,name) => {
   const mailOptions = {
     from: 'baboga12@gmail.com',
     to: email,
-    subject: 'OPEN ACCOUNT- BRANIAC SOCIAL MEDIA ',
+    subject: 'Open Account - BRANIAC SOCIAL MEDIA',
     html: openAccount(name),
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('--------------------------------------------------------------------------------------------------------------------')
-    console.log('Sent email Delete Tag successfully');
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    console.log('Sent email to inform about account opening successfully');
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Error sending account opening email:', error);
     throw error;
   }
 };
