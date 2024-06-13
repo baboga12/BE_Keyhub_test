@@ -59,6 +59,24 @@ static getAllUser = async () => {
   //   }
   //   await user.save();
   // }
+
+  //Changes User Blog
+  // const listBlog = await Blog.find({status:'Published'})
+  // const listUserStatus = await UserModel.find({
+  //   roles: 'Client'
+  // })
+
+  // for (const blog of listBlog) {
+  //   const blogUser = await UserModel.findById(blog.user._id);
+  //   blogUser.totalBlog = blogUser.totalBlog -1;
+  //   await blogUser.save(); 
+  //   const randomUser = this.getRandomElement(listUserStatus);
+  //   blog.user = randomUser._id;
+  //   const user = await UserModel.findById(randomUser._id);
+  //   user.totalBlog = user.totalBlog + 1;
+  //   await user.save();
+  //   await blog.save();
+  // }
   const listUsers = await UserModel.find().sort({createAt: -1});
   if (!listUsers) {
     return null;
