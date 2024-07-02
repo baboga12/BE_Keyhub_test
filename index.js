@@ -63,14 +63,11 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
     let group = await Service.findChatById(chatId);
-    if(!group) {
-      group= await Service.findChatByIsAdmin(fromUser);
-    }
+    if (!group) {   
+      console.log("Group not found");
+      return;
+  }
     if (group.isGroup) {
-        if (!group) {   
-            console.log("Group not found");
-            return;
-        }
         group.listUser.forEach(async (userId) => {
           if (userId._id === fromUser) {
             return;
@@ -120,21 +117,13 @@ io.on("connection", (socket) => {
   }
   });
 
-  socket.on("interactionMessage", async({ fromUser, toUser,type, data,chatId }) => {
-    console.log(`User ${fromUser} interacts with user ${toUser}`);
-    if (fromUser === toUser) {
-      console.log("The same user is interacting with itself. No need to send socket.");
-      return; 
-    }
+  socket.on("interactionMessage", async({ fromUser, chatId,type, data }) => {
     let group = await Service.findChatById(chatId);
-    if(!group) {
-      group= await Service.findChatByIsAdmin(fromUser);
-    }
+    if (!group) {   
+      console.log("Group not found");
+      return;
+  }
     if (group.isGroup) {
-        if (!group) {   
-            console.log("Group not found");
-            return;
-        }
         group.listUser.forEach(async (userId) => {
           if (userId._id === fromUser) {
             return;
