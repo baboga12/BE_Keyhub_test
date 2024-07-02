@@ -3,6 +3,8 @@ const Message = require('../models/Chat/messageModel')
 const User = require('../models/usermodel')
 const Follow = require('../models/followModel')
 const notification = require('../models/notificationModel')
+const groupModel = require('../models/Chat/groupModel')
+const notificationModel = require('../models/notificationModel')
 
 class ChatService {
     static isUserFollowedByAuthenticatedUser   = async (user_id, authenticatedUser_id) => {
@@ -235,6 +237,7 @@ class ChatService {
     }
     static checkIsReadChat = async (authenticationUser,chatId)=> {
         const chat = await Group.findById(chatId);
+        if(!chat) return null;
         let isRead = true;
         const listNotify =  await notification.find({
             chat: chatId,
@@ -313,6 +316,7 @@ class ChatService {
             //     }
             // }
             // await chat.save();
+            await notification.deleteMany({chat: chat});
             await chat.deleteOne();
             return 4;
         }
@@ -365,7 +369,9 @@ class ChatService {
         if(!message) return null;
         if(!message.user.equals(authenticatedUser._id))
         return 1;
-        await message.deleteOne();M 
+        const chat = await groupModel.findById(message.chat._id);
+        await notificationModel.deleteMany({chat: chat});
+        await message.deleteOne();
     }
     static editChatName = async(chatId,authenticatedUser,name)=>{
         const chat = await Group.findById(chatId);

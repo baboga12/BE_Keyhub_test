@@ -10,8 +10,9 @@ const Invitation = require('../models/invitationModel')
 const Share = require('../models/Blog/shareModel')
 const categoryService = require('../services/categoryService')
 const blogService= require('../services/blogService')
+const notifyService = require('../services/notificationService')
 const removeDiacritics = require('diacritics').remove;
-
+const Access = require('../models/accessModel')
 class UserService {
 static getUserInfo = async (userId) => {
   const user = await UserModel.findById(userId);
@@ -22,7 +23,6 @@ static getUserInfo = async (userId) => {
 };
 
 static getAllUser = async () => {
-  
   // const roles =  ['Client', 'Admin','Editor'];
   // const statuses =  ['completed', 'locked'];
   // for (let i = 0; i < 30; i++) {
@@ -59,29 +59,76 @@ static getAllUser = async () => {
   //   }
   //   await user.save();
   // }
+  const listUsers = await UserModel.find().sort({createdAt: -1});
+  
+//   for (const user of listUsers) {
+//     const numAccesses = Math.floor(Math.random() * 11) + 15;
 
-  //Changes User Blog
-  // const listBlog = await Blog.find({status:'Published'})
-  // const listUserStatus = await UserModel.find({
-  //   roles: 'Client'
-  // })
+//     for (let i = 0; i < numAccesses; i++) {
+//         const randomDay = Math.floor(Math.random() * 31) + 1;
+//         const createdAt = new Date(new Date().getFullYear(), 4, randomDay);
+//         await Access.create({ user: user._id, createdAt });
+//     }
+// }
 
-  // for (const blog of listBlog) {
-  //   const blogUser = await UserModel.findById(blog.user._id);
-  //   blogUser.totalBlog = blogUser.totalBlog -1;
-  //   await blogUser.save(); 
-  //   const randomUser = this.getRandomElement(listUserStatus);
-  //   blog.user = randomUser._id;
-  //   const user = await UserModel.findById(randomUser._id);
-  //   user.totalBlog = user.totalBlog + 1;
-  //   await user.save();
-  //   await blog.save();
-  // }
-  const listUsers = await UserModel.find().sort({createAt: -1});
+//Follow:
+// const allUsers = await UserModel.find({roles: 'Client', status:'completed'});
+
+// // Lặp qua từng người dùng
+// for (const user of allUsers) {
+//     // Không tự theo dõi chính mình
+//     const usersToFollow = allUsers.filter(u => !u._id.equals(user._id));
+
+//     // Nếu người dùng có ít hơn 40 người dùng
+//     if (usersToFollow.length < 40) {
+//         // Chỉ lấy số người dùng cần thiết
+//         usersToFollow.splice(40);
+//     }
+
+//     // Lấy 40 người dùng ngẫu nhiên
+//     const randomUsersToFollow = this.getRandomElements(usersToFollow, 40);
+
+//     // Theo dõi mỗi người dùng ngẫu nhiên
+//     for (const randomUser of randomUsersToFollow) {
+//         await this.followUser(randomUser._id, user);
+//     }
+//   }
+  const listUserAccess = await UserModel.find({roles: 'Client'})
+  for (const user of listUserAccess) {
+    // Tạo ngẫu nhiên số lần truy cập, ít nhất là 10
+    const numAccesses = Math.floor(Math.random() * 4) + 10; // Số ngẫu nhiên từ 10 đến 13
+
+    for (let i = 0; i < numAccesses; i++) {
+        // Tạo ngẫu nhiên ngày từ 01/07 đến 12/07
+        const randomDay = Math.floor(Math.random() * 12) + 1;
+        const createdAt = new Date(new Date().getFullYear(), 6, randomDay); // Tháng 6 là tháng 7 do chỉ số bắt đầu từ 0
+
+        // Tìm bản ghi truy cập đã tồn tại trong ngày đó của người dùng
+        const existingAccess = await Access.findOne({
+            user: user._id,
+            createdAt: {
+                $gte: new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate()),
+                $lt: new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate() + 1)
+            }
+        });
+
+        // Nếu tồn tại, xóa bản ghi truy cập đó
+        if (existingAccess) {
+            await Access.deleteOne({ _id: existingAccess._id });
+        }
+
+        // Tạo bản ghi truy cập mới
+        await Access.create({ user: user._id, createdAt });
+    }
+}
   if (!listUsers) {
     return null;
   }
   return listUsers;
+}
+static getRandomElements = (array, count) => {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
 static getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -591,7 +638,7 @@ static getWallUsers = async (userId, authenticatedUser) =>{
 static likeBlog = async (authenticatedUser, blogId) => {
   const blog = await Blog.findById(blogId);
   const user = await UserModel.findById(authenticatedUser._id);
-  
+
   if (!blog || !user) {
     return null;
   }
@@ -816,21 +863,15 @@ static search =async(keyword, type, authenticatedUser) =>
   }
   if(type==='User'){
     const users = await UserModel.find({
-       $and:[
-        {
-          $or: [
-            { name: regex },
-            { email: regex },
-            { description: regex },
-            {second_name: regex },
-            {address: regex }
-        ]
-        },
-        {
-          status: 'completed'
-        }
-       ]
+      $text: { $search: regex },
+      status: 'completed',
+      _id: { $ne: user._id } // Loại bỏ user hiện tại
+    }, {
+      score: { $meta: 'textScore' } // Lấy điểm số của kết quả tìm kiếm
+    }).sort({
+      score: { $meta: 'textScore' } // Sắp xếp theo điểm số giảm dần
     });
+
     const filteredUsers = [];
 
     for (const userF of users) {
@@ -847,9 +888,12 @@ static search =async(keyword, type, authenticatedUser) =>
       throw new Error(error.message);
   }
 }
+static removeAccents = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
 static listFiveUser= async()=>{
   const users = await usermodel.find();
-  const mostFollowedClientUser = await UserModel.find({ roles: 'Client' })
+  const mostFollowedClientUser = await UserModel.find({ roles: 'Client', status:'completed' })
       .sort({ totalFollower: -1 })
       .limit(5)
       .exec();

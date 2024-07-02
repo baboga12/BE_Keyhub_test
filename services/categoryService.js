@@ -25,7 +25,8 @@ class CategoryService {
             // Truy vấn lấy tất cả các category mà người dùng không phải là thành viên và không phải là admin
             const excludedCategories = await Category.find({
                 users: { $ne: userId },
-                isAdmin: { $ne: userId }
+                isAdmin: { $ne: userId },
+                status:'Publish',
             })
             .sort({ createdAt: -1 })
             .skip(skip)
@@ -398,19 +399,10 @@ class CategoryService {
         try {
             const regex = new RegExp(key, 'i');
             const user = await User.findById(authenticatedUser._id);
-            const query = await Category.find({
-               $and:[
-              {
-                $or: [
-                    { name: regex },
-                    { description: regex }
-                ]
-              },
-              {
+            const query =  await Category.find({
+                $text: { $search: key },
                 status: 'Publish'
-              }
-               ]
-            }).sort({ updatedAt: -1 });;
+              }).sort({ updatedAt: -1 });
             const categoriesWithUserStatusPromises = query.map(async category => {
                 const statusUser = await this.getUserStatusInCategory1(category, user._id);  
                 return { ...category.toObject(), statusUser };

@@ -11,6 +11,7 @@ const { Server } = require("socket.io");
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const app = express();
+const Service = require('./services/chatService')
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -46,47 +47,61 @@ io.on("connection", (socket) => {
       io.emit("getUsers", users);
     }
   });
-  socket.on("sendMessage", ({ fromUser, toUser, text }) => {
-    const user = getUser(toUser);
-    io.to(user?.socketId).emit("getMessage", {
-      fromUser,
-      toUser,
-      text,
-    });
+
+
+  // socket.on("sendMessage", ({ fromUser, toUser, text }) => {
+  //   const user = getUser(toUser);
+  //   io.to(user?.socketId).emit("getMessage", {
+  //     fromUser,
+  //     toUser,
+  //     text,
+  //   });
+  //   console.log("Send message to socket Success");
+  // });
+
+
+
+  socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
+    const group = await Service.findChatById(chatId);
+    if (group.isGroup) {
+        if (!group) {   
+            console.log("Group not found");
+            return;
+        }
+        group.listUser.forEach(async (userId) => {
+          if (userId === fromUser) {
+            return;
+        }
+        if (userId.toString() === fromUser) {
+          return;
+      }
+            const user = getUser(userId);
+            if (user) {              
+                io.to(user?.socketId).emit("getMessage", {
+                    fromUser,
+                    toUser: user._id,
+                    text,
+                });
+                console.log("Send message to socket Success");
+
+            }
+        });
+    } else {
+        const user = getUser(toUser);
+        if (user) {
+            io.to(user?.socketId).emit("getMessage", {
+                fromUser,
+                toUser,
+                text,
+            });
+            console.log("Send message to socket Success");
+
+        } else {
+            console.log("User not found");
+        }
+    }
     console.log("Send message to socket Success");
-  });
-//   socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
-//     console.log({ fromUser, toUser, text, chatId });
-//     const group = await Service.findChatById(toUser);
-//     if (group.isGroup) {
-//         if (!group) {   
-//             console.log("Group not found");
-//             return;
-//         }
-//         group.listUser.forEach(async (userId) => {
-//             const user = getUser(userId);
-//             if (user) {              
-//                 io.to(user.socketId).emit("getMessage", {
-//                     fromUser,
-//                     toUser: user._id,
-//                     text,
-//                 });
-//             }
-//         });
-//     } else {
-//         const user = getUser(toUser);
-//         if (user) {
-//             io.to(user.socketId).emit("getMessage", {
-//                 fromUser,
-//                 toUser,
-//                 text,
-//             });
-//         } else {
-//             console.log("User not found");
-//         }
-//     }
-//     console.log("Send message to socket Success");
-// });
+});
   socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
@@ -145,11 +160,11 @@ const job23 = schedule.scheduleJob('59 59 23 * * *', () => {
   console.log('--------------------------------------------------------------------------------------------------------------------');
   service.adminService.autoFilterBlog();
 });
-const intervalId = setInterval(() => {
-  console.log('Running scheduled task at 5m');
-  console.log('--------------------------------------------------------------------------------------------------------------------');
-  service.adminService.autoFilterBlog();
-}, 300000); 
+// const intervalId = setInterval(() => {
+//   console.log('Running scheduled task at 5m');
+//   console.log('--------------------------------------------------------------------------------------------------------------------');
+//   service.adminService.autoFilterBlog();
+// },80000); 
 
 
 const port = process.env.PORT || 3001;
