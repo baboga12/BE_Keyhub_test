@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
     }
     console.log("Send message to socket Success");
 });
-  socket.on("interaction", ({ fromUser, toUser,type, data, chatId }) => {
+  socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
       console.log("The same user is interacting with itself. No need to send socket.");
@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
         if (userId._id.toString() === fromUser) {
           return;
       }
-      const recipientSocket = getUser(toUser)?.socketId;
+      const recipientSocket = getUser(userId._id)?.socketId;
       if (recipientSocket) {
         console.log("User receiver is online.");
         io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
