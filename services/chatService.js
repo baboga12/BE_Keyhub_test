@@ -258,7 +258,7 @@ class ChatService {
         return chat;
     }
     static findChatByIsAdmin= async (userId) => {
-        const chat = await Group.findOne({isAdmin: userId});
+        const chat = await Group.findOne({admins: userId});
         return chat;
     }
     static listChatUsersIsWait = async(authenticationUser) => {
