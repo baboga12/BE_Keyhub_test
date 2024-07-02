@@ -104,12 +104,13 @@ io.on("connection", (socket) => {
     }
     console.log("Send message to socket Success");
 });
-  socket.on("interaction", ({ fromUser, toUser,type, data }) => {
+  socket.on("interaction", ({ fromUser, toUser,type, data, chatId }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
       console.log("The same user is interacting with itself. No need to send socket.");
       return; 
     }
+
     const recipientSocket = getUser(toUser)?.socketId;
     if (recipientSocket) {
       console.log("User receiver is online.");
@@ -119,19 +120,37 @@ io.on("connection", (socket) => {
   }
   });
 
-  socket.on("interactionMessage", ({ fromUser, toUser,type, data }) => {
+  socket.on("interactionMessage", async({ fromUser, toUser,type, data,chatId }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
       console.log("The same user is interacting with itself. No need to send socket.");
       return; 
     }
-    const recipientSocket = getUser(toUser)?.socketId;
-    if (recipientSocket) {
-      console.log("User receiver is online.");
-      io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
+    let group = await Service.findChatById(chatId);
+    if(!group) {
+      group= await Service.findChatByIsAdmin(fromUser);
     }
-    else{ console.log("User receiver is not online.");
-  }
+    if (group.isGroup) {
+        if (!group) {   
+            console.log("Group not found");
+            return;
+        }
+        group.listUser.forEach(async (userId) => {
+          if (userId._id === fromUser) {
+            return;
+        }
+        if (userId._id.toString() === fromUser) {
+          return;
+      }
+      const recipientSocket = getUser(toUser)?.socketId;
+      if (recipientSocket) {
+        console.log("User receiver is online.");
+        io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
+      }
+      else{ console.log("User receiver is not online.");
+    }
+        });
+    }
   });
 
 
