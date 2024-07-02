@@ -95,7 +95,6 @@ io.on("connection", (socket) => {
                 text,
             });
             console.log("Send message to socket Success");
-
         } else {
             console.log("User not found");
         }
