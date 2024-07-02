@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
         if (userId._id.toString() === fromUser) {
           return;
       }
-            const user = getUser(userId._id);
+            const user = getUser(userId._id.toString());
             if (user) {              
                 io.to(user?.socketId).emit("getMessage", {
                     fromUser,
@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
         if (userId._id.toString() === fromUser) {
           return;
       }
-      const recipientSocket = getUser(userId._id)?.socketId;
+      const recipientSocket = getUser(userId._id.toString())?.socketId;
       if (recipientSocket) {
         console.log("User receiver is online.");
         io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
