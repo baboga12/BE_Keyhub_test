@@ -62,7 +62,10 @@ io.on("connection", (socket) => {
 
 
   socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
-    const group = await Service.findChatById(chatId);
+    let group = await Service.findChatById(chatId);
+    if(!group) {
+      group= await Service.findChatByIsAdmin(fromUser);
+    }
     if (group.isGroup) {
         if (!group) {   
             console.log("Group not found");
