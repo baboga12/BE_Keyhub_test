@@ -72,13 +72,13 @@ io.on("connection", (socket) => {
             return;
         }
         group.listUser.forEach(async (userId) => {
-          if (userId === fromUser) {
+          if (userId._id === fromUser) {
             return;
         }
-        if (userId.toString() === fromUser) {
+        if (userId._id.toString() === fromUser) {
           return;
       }
-            const user = getUser(userId);
+            const user = getUser(userId._id);
             if (user) {              
                 io.to(user?.socketId).emit("getMessage", {
                     fromUser,
