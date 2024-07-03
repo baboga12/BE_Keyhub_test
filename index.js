@@ -87,21 +87,15 @@ io.on("connection", (socket) => {
 //         });
 //     console.log("Send message to socket Success");
 // });
-socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
+socket.on("sendMessage", async ({ fromUser, chatId, text }) => {
   let group = await Service.findChatById(chatId);
   if(!group) {
-    group= await Service.findChatByIsAdmin(fromUser);
-  }
+    group= await Service.findChatByIsAdmin(fromUser);}
   if (!group) {   
     console.log("Group not found");
     return;
 }
-  if (group.isGroup) {
-      if (!group) {   
-          console.log("Group not found");
-          return;
-      }
-      group.listUser.forEach(async (userId) => {
+    group.listUser.forEach(async (userId) => {
         if (userId._id === fromUser) {
           return;
       }
@@ -118,22 +112,9 @@ socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
               console.log("Send message to socket Success");
           }
       });
-  } else {
-      const user = getUser(toUser);
-      if (user) {
-          io.to(user?.socketId).emit("getMessage", {
-              fromUser,
-              toUser,
-              text,
-          });
-          console.log("Send message to socket Success");
-      } else {
-          console.log("User not found");
-      }
-  }
   console.log("Send message to socket Success");
 });
-  socket.on("interaction", ({ fromUser, toUser,type, data }) => {
+socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
       console.log("The same user is interacting with itself. No need to send socket.");
@@ -149,7 +130,7 @@ socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
   }
   });
 
-  socket.on("interactionMessage", async({ fromUser, chatId ,type, data }) => {
+socket.on("interactionMessage", async({ fromUser, chatId ,type, data }) => {
     let group = await Service.findChatById(chatId);
     if (!group) {   
       console.log("Group not found");
