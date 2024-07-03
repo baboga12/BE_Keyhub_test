@@ -61,31 +61,77 @@ io.on("connection", (socket) => {
 
 
 
-  socket.on("sendMessage", async ({ fromUser, chatId, text  }) => {
-    let group = await Service.findChatById(chatId);
-    if (!group) {   
-      console.log("Group not found");
-      return;
+//   socket.on("sendMessage", async ({ fromUser, chatId, text  }) => {
+//     let group = await Service.findChatById(chatId);
+//     if (!group) {   
+//       console.log("Group not found");
+//       return;
+//   }
+//         group.listUser.forEach(async (userId) => {
+//           if (userId._id === fromUser) {
+//             return;
+//         }
+//         if (userId._id.toString() === fromUser) {
+//           return;
+//       }
+//             const user = getUser(userId._id.toString());
+//             if (user) {              
+//                 io.to(user?.socketId).emit("getMessage", {
+//                     fromUser,
+//                     toUser: user._id,
+//                     text,
+//                 });
+//                 console.log("Send message to socket Success");
+
+//             }
+//         });
+//     console.log("Send message to socket Success");
+// });
+socket.on("sendMessage", async ({ fromUser, toUser, text, chatId }) => {
+  let group = await Service.findChatById(chatId);
+  if(!group) {
+    group= await Service.findChatByIsAdmin(fromUser);
   }
-        group.listUser.forEach(async (userId) => {
-          if (userId._id === fromUser) {
-            return;
-        }
-        if (userId._id.toString() === fromUser) {
+  if (!group) {   
+    console.log("Group not found");
+    return;
+}
+  if (group.isGroup) {
+      if (!group) {   
+          console.log("Group not found");
           return;
       }
-            const user = getUser(userId._id.toString());
-            if (user) {              
-                io.to(user?.socketId).emit("getMessage", {
-                    fromUser,
-                    toUser: user._id,
-                    text,
-                });
-                console.log("Send message to socket Success");
-
-            }
-        });
-    console.log("Send message to socket Success");
+      group.listUser.forEach(async (userId) => {
+        if (userId._id === fromUser) {
+          return;
+      }
+      if (userId._id.toString() === fromUser) {
+        return;
+    }
+          const user = getUser(userId._id.toString());
+          if (user) {              
+              io.to(user?.socketId).emit("getMessage", {
+                  fromUser,
+                  toUser: user._id,
+                  text,
+              });
+              console.log("Send message to socket Success");
+          }
+      });
+  } else {
+      const user = getUser(toUser);
+      if (user) {
+          io.to(user?.socketId).emit("getMessage", {
+              fromUser,
+              toUser,
+              text,
+          });
+          console.log("Send message to socket Success");
+      } else {
+          console.log("User not found");
+      }
+  }
+  console.log("Send message to socket Success");
 });
   socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
@@ -117,9 +163,10 @@ io.on("connection", (socket) => {
           return;
       }
       const recipientSocket = getUser(userId._id.toString())?.socketId;
+      const toUserId = userId._id.toString();
       if (recipientSocket) {
         console.log("User receiver is online.");
-        io.to(recipientSocket).emit("notificationMessage", {fromUser, toUser,type, data});
+        io.to(recipientSocket).emit("notificationMessage", {fromUser, toUserId,type, data});
       }
       else{ console.log("User receiver is not online.");
     }
