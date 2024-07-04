@@ -118,9 +118,8 @@ userSchema.pre('save', async function (next) {
   }
   next();
 });
-userSchema.post('save', function(next) {
+userSchema.post('save', function() {
   const fieldsToCheck = ['sumViolating', 'totalBlog', 'totalFollowing', 'totalFollower'];
-
   let needsSave = false;
 
   fieldsToCheck.forEach(field => {
@@ -131,9 +130,7 @@ userSchema.post('save', function(next) {
   });
 
   if (needsSave) {
-    this.save().then(() => next());
-  } else {
-    next();
+    this.save();
   }
 });
 
