@@ -693,7 +693,7 @@ class BlogService{
             tomorrow.setDate(today.getDate() + 1);
     
             // Kiểm tra quyền truy cập chỉ một lần
-            const checkAccess = await Access.findOneAndUpdate(
+            await Access.findOneAndUpdate(
                 { user: userId, createdAt: { $gte: today, $lt: tomorrow } },
                 { $setOnInsert: { user: userId } },
                 { upsert: true, new: true }
@@ -711,12 +711,18 @@ class BlogService{
             const categoryIds = categories.map(category => category._id);
             const followingIds = follow ? follow.following.map(follow => follow._id) : [];
     
-            // Sử dụng aggregate để kết hợp truy vấn
+            // Sử dụng điều kiện truy vấn chung để tính tổng số lượng bài viết
+            const queryConditions = [
+                { category: { $in: categoryIds }, status: 'Published', isApproved: false, user: { $ne: userId } },
+                { user: { $in: followingIds }, status: 'Published', isApproved: false, user: { $ne: userId } }
+            ];
+    
+            // Đếm tổng số lượng bài viết
+            const totalBlogsCount = await Blog.countDocuments({ $or: queryConditions });
+    
+            // Sử dụng aggregate để kết hợp truy vấn và phân trang
             const blogs = await Blog.aggregate([
-                { $match: { $or: [
-                    { category: { $in: categoryIds }, status: 'Published', isApproved: false, user: { $ne: userId } },
-                    { user: { $in: followingIds }, status: 'Published', isApproved: false, user: { $ne: userId } }
-                ]}},
+                { $match: { $or: queryConditions }},
                 { $sort: { createdAt: -1 }},
                 { $skip: startIndex },
                 { $limit: pageSize },
@@ -790,8 +796,8 @@ class BlogService{
                 return 0;
             });
     
-            const size = Math.ceil(uniqueBlogs.length / pageSize);
-            const paginatedPosts = uniqueBlogs.slice(startIndex, startIndex + pageSize);
+            const size = Math.ceil(totalBlogsCount / pageSize);
+            const paginatedPosts = uniqueBlogs.slice(0, pageSize);  // Đã được phân trang trong truy vấn
     
             return { size, posts: paginatedPosts };
         } catch (error) {
@@ -799,6 +805,8 @@ class BlogService{
             return null;
         }
     }
+    
+    
     
 
         static listBlogShareByUSer = async (authenticatedUser,userId)=>{
