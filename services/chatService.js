@@ -297,6 +297,7 @@ class ChatService {
         {
             if(chat.admins.some(userList => userList._id.equals(user._id)))
             {
+                await notification.deleteMany({chat: chat});
                 await chat.deleteOne();
                 return 2;
             }
