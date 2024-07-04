@@ -89,8 +89,6 @@ io.on("connection", (socket) => {
 // });
 socket.on("sendMessage", async ({ fromUser, chatId, text }) => {
   let group = await Service.findChatById(chatId);
-  if(!group) {
-    group= await Service.findChatByIsAdmin(fromUser);}
   if (!group) {   
     console.log("Group not found");
     return;
@@ -108,12 +106,14 @@ socket.on("sendMessage", async ({ fromUser, chatId, text }) => {
                   fromUser,
                   toUser: user._id,
                   text,
+                  chatId: group._id
               });
               console.log("Send message to socket Success");
           }
       });
   console.log("Send message to socket Success");
 });
+
 socket.on("interaction", ({ fromUser, toUser,type, data }) => {
     console.log(`User ${fromUser} interacts with user ${toUser}`);
     if (fromUser === toUser) {
@@ -145,9 +145,10 @@ socket.on("interactionMessage", async({ fromUser, chatId ,type, data }) => {
       }
       const recipientSocket = getUser(userId._id.toString())?.socketId;
       const toUserId = userId._id.toString();
+      const chatId = group._id;
       if (recipientSocket) {
         console.log("User receiver is online.");
-        io.to(recipientSocket).emit("notificationMessage", {fromUser, toUserId,type, data});
+        io.to(recipientSocket).emit("notificationMessage", {fromUser, toUserId,type, data,chatId});
       }
       else{ console.log("User receiver is not online.");
     }
