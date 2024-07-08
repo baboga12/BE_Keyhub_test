@@ -103,6 +103,15 @@ class BlogService{
         const user = await User.findById(authenticatedUser.user._id)
         const blog = await Blog.findById(blogId);
         if(!blog) return null;
+        if(blog.status === 'Published' && blogDTO.status === 'Draft'){
+            user.totalBlog = user.totalBlog - 1;
+            await user.save();
+        }
+        if(blogDTO.status === 'Published' && blog.status === 'Draft'){
+            user.totalBlog = user.totalBlog + 1;
+            await user.save();
+            await temporaryImageModel.findOneAndDelete({user: authenticatedUser.user._id})
+        }    
         blog.title = blogDTO.title|| blogDTO.title;
         blog.content = blogDTO.content;
         blog.category = blogDTO.categoryIds;
@@ -114,11 +123,6 @@ class BlogService{
         if(blogDTO.tagIds!=null){
             await blog.addTags(blogDTO.tagIds);
             }
-        if(blogDTO.status == 'published'){
-            user.totalBlog = user.totalBlog + 1;
-            await user.save();
-            await temporaryImageModel.findOneAndDelete({user: authenticatedUser.user._id})
-        }
         return blog;
     }
     static uploadImage = async (fileData, authenticatedUser) =>{
@@ -156,7 +160,7 @@ class BlogService{
             const updatedShare = await Share.findOneAndUpdate(
                 { listBlog: blogId },
                 { $pull: { listBlog: blogId } }, 
-                { new: true } // Trả về bản ghi Share đã được cập nhật
+                { new: true } 
             );
             let user = await User.findById(blog.user._id);
             if(blog.status==='Published'){
@@ -816,31 +820,36 @@ class BlogService{
     
     
 
-        static listBlogShareByUSer = async (authenticatedUser,userId)=>{
-            try {
-                const query = await Share.findOne({ user: userId})
-                if(!query){
-                    return 1;
+    static listBlogShareByUSer = async (authenticatedUser, userId) => {
+        try {
+            const query = await Share.findOne({ user: userId });
+            if (!query) {
+                return 1;
+            }
+            
+            let listBlog = query.listBlog;
+            let result = [];
+    
+            for (const blogId of listBlog) {
+                if (blogId) {
+                    result.push(blogId);
                 }
-                let listBlog = query.listBlog;         
-                let result = []
-               for (const blog of listBlog) {
-                if(blog)
-                {
-                    result.push(blog)
-                }
-               }
-                const posts = await this.findAndUpdateLikeAndSave(result,authenticatedUser._id)
-                const posts2 = await this.findAndUpdatePermissions(posts,authenticatedUser._id)
-                if (posts2.length === 0) {
-                    return null;
-                }
-                return posts2;
-            } catch (error) {
-                console.error("Error fetching most active posts:", error);
+            }
+    
+            const blogs = await Blog.find({ _id: { $in: result } }).populate('category');
+    
+            const posts = await this.findAndUpdateLikeAndSave(blogs, authenticatedUser._id);
+            const posts2 = await this.findAndUpdatePermissions(posts, authenticatedUser._id);
+            if (posts2.length === 0) {
                 return null;
             }
+            return posts2;
+        } catch (error) {
+            console.error("Error fetching most active posts:", error);
+            return null;
         }
+    }
+    
         static getAllBlog = async ()=>{
             try {
                 const query = await Blog.find()

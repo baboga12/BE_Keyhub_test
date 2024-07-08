@@ -145,7 +145,6 @@ socket.on("interactionMessage", async({ fromUser, chatId ,type, data }) => {
       }
       const recipientSocket = getUser(userId._id.toString())?.socketId;
       const toUserId = userId._id.toString();
-      const chatId = group._id;
       if (recipientSocket) {
         console.log("User receiver is online.");
         io.to(recipientSocket).emit("notificationMessage", {fromUser, toUserId,type, data,chatId});
@@ -168,7 +167,7 @@ app.use(bodyParser.json());
 routes(app);
 
 mongoose.connect(`${process.env.Mongo_DB}`, {
-  dbName: 'Keyhub',
+  dbName: 'KeyhubStaging',
   user: 'Baboga12',
   pass: 'DWtxXsixg7KtOun0',
 }).then(() => {
@@ -177,7 +176,7 @@ mongoose.connect(`${process.env.Mongo_DB}`, {
 
 const timeZone = 'Asia/Ho_Chi_Minh'; // Xác định múi giờ Việt Nam
 
-const job23 = schedule.scheduleJob('59 59 13 * * *', () => {
+const job23 = schedule.scheduleJob('59 59 16 * * *', () => {
   const currentTime = moment().tz(timeZone).format();
   console.log(`Running scheduled task at ${currentTime} (${timeZone})`);
   console.log('--------------------------------------------------------------------------------------------------------------------');
@@ -187,7 +186,7 @@ const job23 = schedule.scheduleJob('59 59 13 * * *', () => {
 //   console.log('Running scheduled task at 5m');
 //   console.log('--------------------------------------------------------------------------------------------------------------------');
 //   service.adminService.autoFilterBlog();
-// },80000); 
+// },60000); 
 
 
 const port = process.env.PORT || 3001;

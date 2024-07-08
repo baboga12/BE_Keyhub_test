@@ -1638,7 +1638,7 @@ const blockUser = () => {
   "                          <table class=\"heading_block block-1\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n" +
   "                            <tr>\n" +
   "                              <td class=\"pad\" style=\"text-align:center;width:100%;\">\n" +
-  "                                <h1 style=\"margin: 0; color: #ba3d4f; direction: ltr; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 23px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;\"><span class=\"tinyMce-placeholder\">Account Suspension</span></h1>\n" +
+  "                                <h1 style=\"margin: 0; color: #ba3d4f; direction: ltr; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 23px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;\"><span class=\"tinyMce-placeholder\">Account Lock</span></h1>\n" +
   "                              </td>\n" +
   "                            </tr>\n" +
   "                          </table>\n" +
@@ -2802,8 +2802,10 @@ const sendVerificationEmail = async (email, otp) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
 
@@ -2827,8 +2829,10 @@ const sendInformDeleteBlog = async (email, title) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2851,8 +2855,10 @@ const sendInformDeleteGroup = async (email, name) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2875,8 +2881,10 @@ const sendInformDeleteTag = async (email, tag) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2899,8 +2907,10 @@ const sendInformWarningUser = async (email, reason) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2924,8 +2934,10 @@ const sendInformBlockUser = async (email) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2949,8 +2961,10 @@ const sendInformDeleteComment = async (email, title) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {
@@ -2974,8 +2988,10 @@ const sendInformOpenAccount = async (email, name) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
-      pass: 'oegwbkflmskqidun', // Your Gmail email password
+      // user: 'brainiacservicehelp@gmail.com', // Your Gmail email address
+      // pass: 'oegwbkflmskqidun', // Your Gmail email password
+      user: 'baboga12@gmail.com', // Your Gmail email address
+      pass: 'gommwlbokkhmtqln', //
     },
   });
   const mailOptions = {

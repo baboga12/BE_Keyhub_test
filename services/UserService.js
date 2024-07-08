@@ -326,7 +326,7 @@ static updateUserInfo = async (authenticatedUser, profileDTO,res ) =>{
     // Update user information with data from the profileDTO
     user.name = profileDTO.name || user.name;
     user.phone = profileDTO.phone || user.phone;
-    user.second_name = profileDTO.second_name || user.second_name;
+    user.second_name = profileDTO.secondName || user.second_name;
     user.gender = profileDTO.gender || user.gender;
     user.descriptions = profileDTO.descriptions || user.descriptions;
     user.address = profileDTO.address || user.address;
@@ -334,13 +334,14 @@ static updateUserInfo = async (authenticatedUser, profileDTO,res ) =>{
     
     // Save the updated user to the database
     await user.save();
+    const userUpdate = await UserModel.findById(user_id);
     console.log('Updated user info successfully')
     console.log('--------------------------------------------------------------------------------------------------------------------')
     return res.status(200).json({
       success: true,
       statusCode: 200,
       message: 'User information updated successfully',
-      result: user,
+      result: userUpdate,
     });
 }
 static uploadAvatar = async(authenticatedUser, fileData) =>{
